@@ -1,4 +1,4 @@
-/// <reference path="zepto.d.ts" />
+
 
 $('div')  //=> all DIV elements on the page
 $('#foo') //=> element with ID "foo"
@@ -177,7 +177,7 @@ $(document).on('click', 'a', function (e) { return true; });
 // add a handler for a custom event
 $(document).on(
 	'mylib:change',
-	<(e: Event) => boolean>function (e, from, to) {
+	<(e: Event) => boolean>function (e: Event, from: any, to: any) {
 		console.log('change on %o with data %s, %s', e.target, from, to);
 		return true;
 	}
@@ -186,7 +186,7 @@ $(document).on(
 $(document.body).trigger('mylib:change', ['one', 'two']);
 
 $(document).on('ajaxBeforeSend',
-	<(e: Event) => boolean>function (e, xhr, options) {
+	<(e: Event) => boolean>function (e: Event, xhr: any, options: any) {
 		// This gets fired for every Ajax request performed on the page.
 		// The xhr object and $.ajax() options are available for editing.
 		// Return false to cancel this request.
@@ -306,3 +306,9 @@ $.browser.playbook;
 !!$.os.ios;           // => true
 !!$.os.version;       // => "6.1"
 !!$.browser.version;  // => "536.26"
+
+// shortcut methods for `.bind(event, fn)` for each event type
+$('#example').click();
+$('#example').click(() => {
+    alert('clicked');
+});

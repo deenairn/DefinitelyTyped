@@ -1,50 +1,91 @@
-///<reference path="commander.d.ts"/>
+// NOTE: import statement can not use in TypeScript 1.0.1
+import program = require('commander');
 
-//
-// TODO: improve tests
-// [the code below was extracted from the documentation and examples, but does not seem to cover all cases]
-// 
+program
+    .version('0.0.1')
+    .option('-p, --peppers', 'Add peppers')
+    .option('-P, --pineapple', 'Add pineapple')
+    .option('-b, --bbq', 'Add bbq sauce')
+    .option('-c, --cheese [type]', 'Add the specified type of cheese [marble]', 'marble')
+    .parse(process.argv);
 
-import program = require("commander");
+console.log('you ordered a pizza with:');
+if (program['peppers']) console.log('  - peppers');
+if (program['pineapple']) console.log('  - pineapple');
+if (program['bbq']) console.log('  - bbq');
+console.log('  - %s cheese', program['cheese']);
+
+function range(val:string) {
+    return val.split('..').map(Number);
+}
+
+function list(val:string) {
+    return val.split(',');
+}
+
+function collect(val:string, memo:string[]) {
+    memo.push(val);
+    return memo;
+}
+
+function increaseVerbosity(v:any, total:number) {
+    return total + 1;
+}
+
+program
+    .version('0.0.1')
+    .usage('[options] <file ...>')
+    .option('-i, --integer <n>', 'An integer argument', parseInt)
+    .option('-f, --float <n>', 'A float argument', parseFloat)
+    .option('-r, --range <a>..<b>', 'A range', range)
+    .option('-l, --list <items>', 'A list', list)
+    .option('-o, --optional [value]', 'An optional value')
+    .option('-c, --collect [value]', 'A repeatable value', collect, [])
+    .option('-v, --verbose', 'A value that can be increased', increaseVerbosity, 0)
+    .parse(process.argv);
+
+console.log(' int: %j', program['integer']);
+console.log(' float: %j', program['float']);
+console.log(' optional: %j', program['optional']);
+program['range'] = program['range'] || [];
+console.log(' range: %j..%j', program['range'][0], program['range'][1]);
+console.log(' list: %j', program['list']);
+console.log(' collect: %j', program['collect']);
+console.log(' verbosity: %j', program['verbose']);
+console.log(' args: %j', program['args']);
+
+
+program
+    .version('0.0.1')
+    .option('-f, --foo', 'enable some foo')
+    .option('-b, --bar', 'enable some bar')
+    .option('-B, --baz', 'enable some baz');
+
+// must be before .parse() since
+// node's emit() is immediate
+
+program.on('--help', () => {
+    console.log('  Examples:');
+    console.log('');
+    console.log('    $ custom-help --help');
+    console.log('    $ custom-help -h');
+    console.log('');
+});
+
+program
+    .command('allow-unknown-option')
+    .allowUnknownOption()
+    .action(() => {
+        console.log('unknown option is allowed');
+    });
 
 program
   .version('0.0.1')
-  .option('-C, --chdir <path>', 'change the working directory')
-  .option('-c, --config <path>', 'set config path [./deploy.conf]')
-  .option('-T, --no-tests', 'ignore test hook')
-
-// $ deploy setup stage
-// $ deploy setup
-program
-  .command('setup [env]')
-  .description('run setup commands for all envs')
-  .action(function (env?) {
-      env = env || 'all';
-      console.log('setup for %s env(s)', env);
+  .arguments('<cmd> [env]')
+  .action(function (cmd, env) {
+     console.log(cmd, env);
   });
 
-// $ deploy stage
-// $ deploy production
-program
-  .command('*')
-  .action(function (env?) {
-      console.log('deploying "%s"', env);
-  });
+program.parse(process.argv);
 
-program.option('-p, --pepper', 'add pepper');
-
-program.option('-C, --chdir <path>', 'change the working directory');
-
-program.prompt('Username: ', function (name) {
-    console.log('hi %s', name);
-});
-
-program.prompt('Description:', function (desc) {
-    console.log('description was "%s"', desc.trim());
-});
-
-program.promptForNumber("Enter a number:", (n) => { });
-
-program.confirm("Confirm? ", (f) => { });
-
-program.choose(["a", "b", "c"], (i) => { });
+console.log('stuff');

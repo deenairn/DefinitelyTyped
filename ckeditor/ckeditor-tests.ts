@@ -1,4 +1,4 @@
-/// <reference path="ckeditor.d.ts" />
+
 
 function test_CKEDITOR() {
     CKEDITOR.basePath = 'test';
@@ -35,6 +35,23 @@ function test_CKEDITOR() {
     CKEDITOR.replaceAll();
     CKEDITOR.replaceAll('myClassName');
     CKEDITOR.replaceAll((textarea, config) => false);
+}
+
+function test_config() {
+    var config1: CKEDITOR.config = {
+        toolbar: 'basic',
+    };
+    var config2: CKEDITOR.config = {
+        toolbar: [
+            [ 'mode', 'document', 'doctools' ],
+            [ 'clipboard', 'undo' ],
+            '/',
+            [ 'find', 'selection', 'spellchecker' ],
+            [ 'basicstyles', 'cleanup' ],
+            '/',
+            [ 'list', 'indent', 'blocks', 'align', 'bidi' ],
+        ],
+    };
 }
 
 function test_dom_comment() {
@@ -161,7 +178,7 @@ function test_dom_element() {
 }
 
 function test_dom_event() {
-    var event = new CKEDITOR.dom.event(new Event());
+    var event = new CKEDITOR.dom.event(new Event(""));
     alert(event.getKey());
     alert(event.getKeystroke() == 65);
     alert(event.getKeystroke() == CKEDITOR.CTRL + 65);
@@ -251,4 +268,98 @@ function test_dom_window() {
     var size = win.getViewPaneSize();
     alert(size.width);
     alert(size.height);
+}
+
+function test_adding_dialog_by_path() {
+    CKEDITOR.dialog.add( 'abbrDialog', this.path + 'dialogs/abbr.js' );
+}
+
+function test_adding_dialog_by_definition() {
+    CKEDITOR.dialog.add( 'abbrDialog', function ( editor: CKEDITOR.editor ) {
+        return {
+            title: 'Abbreviation Properties',
+            minWidth: 400,
+            minHeight: 200,
+
+            contents: [
+                {
+                    id: 'tab-basic',
+                    label: 'Basic Settings',
+                    elements: <any[]>[]
+                },
+                {
+                    id: 'tab-adv',
+                    label: 'Advanced Settings',
+                    elements: []
+                }
+            ]
+        };
+    });
+}
+
+function test_adding_plugin() {
+    CKEDITOR.plugins.add( 'abbr', {
+        init: function( editor: CKEDITOR.editor ) {
+            // empty logic
+        }
+    });
+}
+
+function test_adding_widget() {
+    function wrapper(editor: CKEDITOR.editor) {
+            editor.widgets.add("widgetty", {
+            button: "Activate widgetty",
+            template: "<imaginary-element>",
+            dialog: "widgetty",
+            init: function() {
+                // no logic
+            }
+        });
+    }
+}
+
+function test_focusManager() {
+    var textarea = document.createElement('textarea');
+    var instance = CKEDITOR.replace(textarea);
+    var element = CKEDITOR.document.getById('myElement');
+
+    instance.focusManager.focus();
+    instance.focusManager.focus(element);
+    instance.focusManager.lock();
+    instance.focusManager.unlock();
+    instance.focusManager.blur();
+    instance.focusManager.blur(true);
+    instance.focusManager.add(element, true);
+    instance.focusManager.remove(element);
+
+    var focusManager = new CKEDITOR.focusManager(instance);
+    var object: CKEDITOR.dom.domObject = focusManager.currentActive;
+    var bool: boolean = focusManager.hasFocus;
+}
+
+function test_basicWriter() {
+    var writer = new CKEDITOR.htmlParser.basicWriter();
+    writer.openTag('p', {});
+    writer.attribute('class', 'MyClass');
+    writer.openTagClose('p', false);
+    writer.text('Hello');
+    writer.closeTag('p');
+    alert(writer.getHtml(true)); // '<p class="MyClass">Hello</p>'
+}
+
+function test_htmlWriter() {
+    var writer = new CKEDITOR.htmlWriter();
+    writer.openTag('p', {});
+    writer.attribute('class', 'MyClass');
+    writer.openTagClose('p', false);
+    writer.text('Hello');
+    writer.closeTag('p');
+    alert(writer.getHtml(true)); // '<p class="MyClass">Hello</p>'
+
+    writer.indentationChars = '\t';
+    writer.lineBreakChars = '\r\n';
+    writer.selfClosingEnd = '>';
+    writer.indentation();
+    writer.lineBreak();
+    writer.setRules('img', {breakBeforeOpen: true, breakAfterOpen: true});
 }

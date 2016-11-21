@@ -1,6 +1,4 @@
-﻿/// <reference path="http-string-parser.d.ts" />
-
-import parser = require("http-string-parser");
+﻿import parser = require("http-string-parser");
 
 function test_request(): void {
     var result = parser.parseRequest("HTTP/1.1 GET /\r\nHost: www.example.com\r\n\r\n");
@@ -38,5 +36,5 @@ function test_statusLine(): void {
 
 function test_headers(): void {
     var result: { [key: string]: string } =
-        parser.parseHeaders("Content-Type: text/html; charset=utf-8\r\nContent-Length: 256\r\n");
+        parser.parseHeaders(["Content-Type: text/html; charset=utf-8", "Content-Length: 256"]);
 }

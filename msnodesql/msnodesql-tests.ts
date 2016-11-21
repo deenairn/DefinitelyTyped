@@ -1,4 +1,3 @@
-/// <reference path="msnodesql.d.ts" />
 
 import sql = require('msnodesql');
 
@@ -12,6 +11,22 @@ function test_streaming() {
     stmt.on('column', function (idx, data, more) { console.log(idx + ":" + data); });
     stmt.on('done', function () { console.log("All done!"); });
     stmt.on('error', function (err) { console.log("We had an error :-( " + err); });
+}
+
+function test_callback() {
+    var conn_str = "Driver={SQL Server Native Client 11.0};Server={(local)\\SQLEXPRESS};Database={DBName};Trusted_Connection={Yes};";
+
+    sql.query(conn_str, "SELECT * FROM TestTable", (err, results) => {
+        if (err) {
+            console.error(err);
+        }
+        else if (results.length) {
+            console.log(results);
+        }
+        else {
+            console.log("No results");
+        }
+    });
 }
 
 function test_explicit() {

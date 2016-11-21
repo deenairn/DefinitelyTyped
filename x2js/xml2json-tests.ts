@@ -1,5 +1,3 @@
-///<reference path="xml2json.d.ts" />
-
 // Create x2js instance with default config
 var x2js = new X2JS();
 
@@ -218,8 +216,8 @@ console.log(xmlDocStr);
 var xmlDocStr = x2js.json2xml_str(
   {
     MyRoot: {
-      MyNullChild: null,
-      MyNullChild2: undefined,
+      MyNullChild: <any>null,
+      MyNullChild2: <any>undefined,
       MyAnotherChild: 10,
       MyEmptyChild: {
         _attr: "test"

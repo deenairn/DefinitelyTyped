@@ -1,6 +1,7 @@
-/// <reference path="es6-promise.d.ts" />
+
 
 import rsvp = require('es6-promise');
+rsvp.polyfill(); // Test for polyfill method existence
 var Promise = rsvp.Promise;
 
 var promiseString: Promise<string>,
@@ -21,12 +22,6 @@ var constructResult1 = new Promise<string>((resolve: (promise: Thenable<string>)
     resolve(Promise.resolve('a string'));
 });
 promiseString = constructResult1;
-
-//cast test
-var castResult = Promise.cast('a string');
-promiseString = castResult;
-var castResult1 = Promise.cast(Promise.resolve('a string'));
-promiseString = castResult1;
 
 //resolve test
 var resolveResult = Promise.resolve('a string');

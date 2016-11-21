@@ -1,19 +1,19 @@
 // Type definitions for WinJS
-// Project: http://msdn.microsoft.com/en-us/library/windows/apps/br229773.aspx
-// Definitions by: TypeScript samples <https://www.typescriptlang.org/>, Adam Hewitt <https://github.com/adamhewitt627>, Craig Treasure <https://github.com/craigktreasure>
-// Definitions: https://github.com/borisyankov/DefinitelyTyped
+// Project: http://try.buildwinjs.com/
+// Definitions by: TypeScript samples <https://www.typescriptlang.org/>, Adam Hewitt <https://github.com/adamhewitt627>, Craig Treasure <https://github.com/craigktreasure>, Jeff Fisher <https://github.com/xirzec>
+// Definitions: https://github.com/DefinitelyTyped/DefinitelyTyped
 
 /* *****************************************************************************
-Copyright (c) Microsoft Corporation. All rights reserved. 
+Copyright (c) Microsoft Corporation. All rights reserved.
 Licensed under the Apache License, Version 2.0 (the "License"); you may not use
 this file except in compliance with the License. You may obtain a copy of the
-License at http://www.apache.org/licenses/LICENSE-2.0  
- 
+License at http://www.apache.org/licenses/LICENSE-2.0
+
 THIS CODE IS PROVIDED ON AN *AS IS* BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
 KIND, EITHER EXPRESS OR IMPLIED, INCLUDING WITHOUT LIMITATION ANY IMPLIED
-WARRANTIES OR CONDITIONS OF TITLE, FITNESS FOR A PARTICULAR PURPOSE, 
-MERCHANTABLITY OR NON-INFRINGEMENT. 
- 
+WARRANTIES OR CONDITIONS OF TITLE, FITNESS FOR A PARTICULAR PURPOSE,
+MERCHANTABLITY OR NON-INFRINGEMENT.
+
 See the Apache Version 2.0 License for specific language governing permissions
 and limitations under the License.
 ***************************************************************************** */
@@ -22,7 +22,7 @@ and limitations under the License.
  * Defines an Element object.
 **/
 interface Element {
-    winControl: any; // TODO: This should be control?
+    winControl: any;
 }
 
 /**
@@ -55,7 +55,7 @@ interface IOHelper {
      * Writes the specified text to the specified file.
      * @param fileName The name of the file.
      * @param text The content to be written to the file.
-     * @returns A promise that completes with a value that is the number of characters written.
+     * @returns A promise that is completed when the file has been written.
      **/
     writeText(fileName: string, text: string): WinJS.Promise<number>;
 }
@@ -63,7 +63,7 @@ interface IOHelper {
 /**
  * Provides application-level functionality, for example activation, storage, and application events.
 **/
-declare module WinJS.Application {
+declare namespace WinJS.Application {
     //#region Objects
 
     /**
@@ -189,7 +189,7 @@ declare module WinJS.Application {
 /**
  * Provides functionality for data and template binding.
 **/
-declare module WinJS.Binding {
+declare namespace WinJS.Binding {
     //#region Properties
 
     /**
@@ -372,6 +372,12 @@ declare module WinJS.Binding {
 
         //#endregion Properties
 
+        /**
+         * Returns a key/data pair for the specified index.
+         * @param index The index of the value to retrieve.
+         * @returns An object that has two properties: key and data.
+        **/
+        getItem(index: number): IGroupKeyDataPair<T>;
     }
 
     /**
@@ -382,7 +388,7 @@ declare module WinJS.Binding {
 
         /**
          * Creates a List object.
-         * @constructor 
+         * @constructor
          * @param list The array containing the elements to initalize the list.
          * @param options You can set two Boolean options: binding and proxy. If options.binding is true, the list contains the result of calling as on the element values. If options.proxy is true, the list specified as the first parameter is used as the storage for the List. This option should be used with care, because uncoordinated edits to the data storage may result in errors.
         **/
@@ -442,7 +448,7 @@ declare module WinJS.Binding {
          * Returns a list with the elements sorted. This method sorts the elements of a list object in place. It does not create a new list object during execution.
          * @param sortFunction The function used to determine the order of the elements. If omitted, the elements are sorted in ascending, ASCII character order. This function must always return the same results, given the same inputs. The results should not depend on values that are subject to change. You must call notifyMutated each time an item changes. Do not batch change notifications.
         **/
-        sort(sortFunction: (left: T, right: T) => number): void;
+        sort(sortFunction?: (left: T, right: T) => number): void;
 
         /**
          * Removes elements from a list and, if necessary, inserts new elements in their place, returning the deleted elements.
@@ -549,7 +555,7 @@ declare module WinJS.Binding {
          * @param groupSorter A function that accepts two arguments. The function is called with pairs of group keys found in the list. It must return one of the following numeric values: negative if the first argument is less than the second (sorted before), zero if the two arguments are equivalent, positive if the first argument is greater than the second (sorted after).
          * @returns A grouped projection over the list.
         **/
-        createGrouped(groupKey: (x: T) => string, groupData: (x: T) => any, groupSorter: (left: string, right: string) => number): GroupedSortedListProjection<T>;
+        createGrouped(groupKey: (x: T) => string, groupData: (x: T) => any, groupSorter?: (left: string, right: string) => number): GroupedSortedListProjection<T>;
 
         /**
          * Creates a live sorted projection over this list. As the list changes, the sorted projection reacts to those changes and may also change.
@@ -609,7 +615,7 @@ declare module WinJS.Binding {
          * @param separator A string used to separate the elements of a list. If this parameter is omitted, the list elements are separated with a comma.
          * @returns The elements of a list separated by the specified separator string.
         **/
-        join(separator: string): string;
+        join(separator?: string): string;
 
         /**
          * Gets the index of the last occurrence of the specified value in a list.
@@ -617,7 +623,7 @@ declare module WinJS.Binding {
          * @param fromIndex The index at which to begin the search. If fromIndex is omitted, the search starts at the last index in the list.
          * @returns The index of the last occurrence of a value in a list, or -1 if not found.
         **/
-        lastIndexOf(searchElement: T, fromIndex: number): number;
+        lastIndexOf(searchElement: T, fromIndex?: number): number;
 
         /**
          * Calls the specified callback function on each element of a list, and returns an array that contains the results.
@@ -671,7 +677,7 @@ declare module WinJS.Binding {
          * @param end The index that specifies the end of the section.
          * @returns Returns a section of list.
         **/
-        slice(begin: number, end: number): T[];
+        slice(begin: number, end?: number): T[];
 
         /**
          * Checks whether the specified callback function returns true for any element of a list.
@@ -724,6 +730,7 @@ declare module WinJS.Binding {
          * @returns The new length of the list.
         **/
         push(value: T): number;
+        push(...values: T[]): number;
 
         /**
          * Removes the first element from a list and returns it.
@@ -737,6 +744,7 @@ declare module WinJS.Binding {
          * @returns The new length of the list.
         **/
         unshift(value: T): number;
+        unshift(...values: T[]): number;
 
         //#endregion Methods
     }
@@ -940,34 +948,32 @@ declare module WinJS.Binding {
 
         /**
          * Creates a template that provides a reusable declarative binding element.
-         * @constructor 
+         * @constructor
          * @param element The DOM element to convert to a template.
          * @param options If this parameter is supplied, the template is loaded from the URI and the content of the element parameter is ignored. You can add the following options: href.
         **/
-        constructor(element: HTMLElement, options?: string);
+        constructor(element: HTMLElement, options?: any);
 
         //#endregion Constructors
 
         //#region Methods
 
-        render: {
-            /**
-             * Binds values from the specified data context to elements that are descendants of the specified root element that have the declarative binding attributes specified (data-win-bind).
-             * @param dataContext The object to use for default data binding.
-             * @param container The element to which to add this rendered template. If this parameter is omitted, a new DIV is created.
-             * @returns A Promise that will be completed after binding has finished. The value is either container or the created DIV. promise that is completed after binding has finished.
-            **/
-            (dataContext: any, container?: HTMLElement): Promise<HTMLElement>;
+        /**
+          * Binds values from the specified data context to elements that are descendants of the specified root element that have the declarative binding attributes specified (data-win-bind).
+          * @param dataContext The object to use for default data binding.
+          * @param container The element to which to add this rendered template. If this parameter is omitted, a new DIV is created.
+          * @returns A Promise that will be completed after binding has finished. The value is either container or the created DIV. promise that is completed after binding has finished.
+        **/
+        render(dataContext: any, container?: HTMLElement): Promise<HTMLElement>;
 
-            /**
-             * Renders a template based on the specified URI (static method).
-             * @param href The URI from which to load the template.
-             * @param dataContext The object to use for default data binding.
-             * @param container The element to which to add this rendered template. If this parameter is omitted, a new DIV is created.
-             * @returns A promise that is completed after binding has finished. The value is either the object in the container parameter or the created DIV.
-            **/
-            value(href: string, dataContext: any, container?: HTMLElement): Promise<HTMLElement>;
-        };
+        /**
+          * Renders a template based on the specified URI (static method).
+          * @param href The URI from which to load the template.
+          * @param dataContext The object to use for default data binding.
+          * @param container The element to which to add this rendered template. If this parameter is omitted, a new DIV is created.
+          * @returns A promise that is completed after binding has finished. The value is either the object in the container parameter or the created DIV.
+        **/
+        static render(href: string, dataContext: any, container?: HTMLElement): Promise<HTMLElement>;
 
         //#endregion Methods
 
@@ -1128,13 +1134,19 @@ declare module WinJS.Binding {
         data: T;
     }
 
+    interface IGroupKeyDataPair<T> extends IKeyDataPair<T> {
+        groupSize: number;
+        firstItemIndexHint: number;
+        firstItemKey: string;
+    }
+
     //#endregion Interfaces
 
 }
 /**
  * Provides helper functions for defining Classes.
 **/
-declare module WinJS.Class {
+declare namespace WinJS.Class {
     //#region Functions
 
     /**
@@ -1144,7 +1156,7 @@ declare module WinJS.Class {
      * @param staticMembers The set of static fields, properties, and methods made available on the type.
      * @returns The newly-defined type.
     **/
-    function define(constructor: Function, instanceMembers?: any, staticMembers?: any): any;
+    function define(constructor?: Function, instanceMembers?: any, staticMembers?: any): any;
 
     /**
      * Creates a sub-class based on the specified baseClass parameter, using prototype inheritance.
@@ -1170,7 +1182,7 @@ declare module WinJS.Class {
 /**
  * The WinJS namespace provides special Windows Library for JavaScript functionality, including Promise and xhr.
 **/
-declare module WinJS {
+declare namespace WinJS {
     //#region Properties
 
     /**
@@ -1190,7 +1202,7 @@ declare module WinJS {
 
         /**
          * Creates an Error object with the specified name and message properties.
-         * @constructor 
+         * @constructor
          * @param name The name of this error. The name is meant to be consumed programmatically and should not be localized.
          * @param message The message for this error. The message is meant to be consumed by humans and should be localized.
         **/
@@ -1200,15 +1212,29 @@ declare module WinJS {
 
     }
 
+    interface IPromise<T> {
+        cancel(): void;
+        done<U>(onComplete?: (value: T) => any, onError?: (error: any) => any, onProgress?: (progress: any) => void): void;
+        then<U>(onComplete?: (value: T) => IPromise<U>, onError?: (error: any) => IPromise<U>, onProgress?: (progress: any) => void): IPromise<U>;
+        then<U>(onComplete?: (value: T) => IPromise<U>, onError?: (error: any) => U, onProgress?: (progress: any) => void): IPromise<U>;
+        then<U>(onComplete?: (value: T) => IPromise<U>, onError?: (error: any) => void, onProgress?: (progress: any) => void): IPromise<U>;
+        then<U>(onComplete?: (value: T) => U, onError?: (error: any) => IPromise<U>, onProgress?: (progress: any) => void): IPromise<U>;
+        then<U>(onComplete?: (value: T) => U, onError?: (error: any) => U, onProgress?: (progress: any) => void): IPromise<U>;
+        then<U>(onComplete?: (value: T) => U, onError?: (error: any) => void, onProgress?: (progress: any) => void): IPromise<U>;
+        then<U>(onComplete?: (value: T) => void, onError?: (error: any) => IPromise<U>, onProgress?: (progress: any) => void): IPromise<U>;
+        then<U>(onComplete?: (value: T) => void, onError?: (error: any) => U, onProgress?: (progress: any) => void): IPromise<U>;
+        then<U>(onComplete?: (value: T) => void, onError?: (error: any) => void, onProgress?: (progress: any) => void): IPromise<U>;
+    }
+
     /**
      * Provides a mechanism to schedule work to be done on a value that has not yet been computed. It is an abstraction for managing interactions with asynchronous APIs. For more information about asynchronous programming, see Asynchronous programming. For more information about promises in JavaScript, see Asynchronous programming in JavaScript. For more information about using promises, see the WinJS Promise sample.
     **/
-    class Promise<T> {
+    class Promise<T> implements IPromise<T> {
         //#region Constructors
 
         /**
          * A promise provides a mechanism to schedule work to be done on a value that has not yet been computed. It is a convenient abstraction for managing interactions with asynchronous APIs. For more information about asynchronous programming, see Asynchronous programming. For more information about promises in JavaScript, see Asynchronous programming in JavaScript. For more information about using promises, see the WinJS Promise sample.
-         * @constructor 
+         * @constructor
          * @param init The function that is called during construction of the Promise that contains the implementation of the operation that the Promise will represent. This can be synchronous or asynchronous, depending on the nature of the operation. Note that placing code within this function does not automatically run it asynchronously; that must be done explicitly with other asynchronous APIs such as setImmediate, setTimeout, requestAnimationFrame, and the Windows Runtime asynchronous APIs. The init function is given three arguments: completeDispatch, errorDispatch, progressDispatch. This parameter is optional.
          * @param onCancel The function to call if a consumer of this promise wants to cancel its undone work. Promises are not required to support cancellation.
         **/
@@ -1222,7 +1248,7 @@ declare module WinJS {
          * Occurs when there is an error in processing a promise.
          * @param eventInfo An object that contains information about the event.
         **/
-        onerror(eventInfo: CustomEvent): void;
+        static onerror(eventInfo: CustomEvent): void;
 
         //#endregion Events
 
@@ -1234,21 +1260,22 @@ declare module WinJS {
          * @param listener The listener to invoke when the event is raised.
          * @param capture true to initiate capture, otherwise false.
         **/
-        addEventListener(type: string, listener: Function, capture?: boolean): void;
+        static addEventListener(type: string, listener: Function, capture?: boolean): void;
 
         /**
          * Returns a promise that is fulfilled when one of the input promises has been fulfilled.
          * @param value An array that contains Promise objects or objects whose property values include Promise objects.
          * @returns A promise that on fulfillment yields the value of the input (complete or error).
         **/
-        static any(value: Promise<any>[]): Promise<any>;
+        static any(value: IPromise<any>[]): IPromise<any>;
+        static any(value: any): IPromise<any>;
 
         /**
          * Returns a promise. If the object is already a Promise it is returned; otherwise the object is wrapped in a Promise. You can use this function when you need to treat a non-Promise object like a Promise, for example when you are calling a function that expects a promise, but already have the value needed rather than needing to get it asynchronously.
          * @param value The value to be treated as a Promise.
          * @returns The promise.
         **/
-        static as<U>(value: U): Promise<U>;
+        static as<U>(value?: U): IPromise<U>;
 
         /**
          * Attempts to cancel the fulfillment of a promised value. If the promise hasn't already been fulfilled and cancellation is supported, the promise enters the error state with a value of Error("Canceled").
@@ -1256,12 +1283,17 @@ declare module WinJS {
         cancel(): void;
 
         /**
+         * Canceled promise value, can be returned from a promise completion handler to indicate cancelation of the promise chain.
+         */
+        static cancel: IPromise<any>;
+
+        /**
          * Raises an event of the specified type and properties.
          * @param type The type (name) of the event.
          * @param details The set of additional properties to be attached to the event object.
          * @returns true if preventDefault was called on the event; otherwise, false.
         **/
-        dispatchEvent(type: string, details: any): boolean;
+        static dispatchEvent(type: string, details: any): boolean;
 
         /**
          * Allows you to specify the work to be done on the fulfillment of the promised value, the error handling to be performed if the promise fails to fulfill a value, and the handling of progress notifications along the way. After the handlers have finished executing, this function throws any error that would have been returned from then as a promise in the error state. For more information about the differences between then and done, see the following topics: Quickstart: using promises in JavaScript How to handle errors when using promises in JavaScript Chaining promises in JavaScript.
@@ -1283,7 +1315,7 @@ declare module WinJS {
          * @param values An object whose members contain values, some of which may be promises.
          * @returns A Promise whose value is an object with the same field names as those of the object in the values parameter, where each field value is the fulfilled value of a promise.
         **/
-        static join(values: any): Promise<any>;
+        static join(values: any): IPromise<any>;
 
         /**
          * Removes an event listener from the control.
@@ -1291,7 +1323,7 @@ declare module WinJS {
          * @param listener The listener to remove.
          * @param capture Specifies whether or not to initiate capture.
         **/
-        removeEventListener(eventType: string, listener: Function, capture?: boolean): void;
+        static removeEventListener(eventType: string, listener: Function, capture?: boolean): void;
 
         /**
          * Allows you to specify the work to be done on the fulfillment of the promised value, the error handling to be performed if the promise fails to fulfill a value, and the handling of progress notifications along the way. For more information about the differences between then and done, see the following topics: Quickstart: using promises in JavaScript How to handle errors when using promises in JavaScript Chaining promises in JavaScript.
@@ -1300,7 +1332,7 @@ declare module WinJS {
          * @param onProgress The function to be called if the promise reports progress. Data about the progress is passed as the single argument. Promises are not required to support progress.
          * @returns The promise whose value is the result of executing the onComplete function.
         **/
-        then<U>(onComplete?: (value: T) => Promise<U>, onError?: (error: any) => Promise<U>, onProgress?: (progress: any) => void): Promise<U>;
+        then<U>(onComplete?: (value: T) => IPromise<U>, onError?: (error: any) => IPromise<U>, onProgress?: (progress: any) => void): IPromise<U>;
 
         /**
          * Allows you to specify the work to be done on the fulfillment of the promised value, the error handling to be performed if the promise fails to fulfill a value, and the handling of progress notifications along the way. For more information about the differences between then and done, see the following topics: Quickstart: using promises in JavaScript How to handle errors when using promises in JavaScript Chaining promises in JavaScript.
@@ -1309,7 +1341,7 @@ declare module WinJS {
          * @param onProgress The function to be called if the promise reports progress. Data about the progress is passed as the single argument. Promises are not required to support progress.
          * @returns The promise whose value is the result of executing the onComplete function.
         **/
-        then<U>(onComplete?: (value: T) => Promise<U>, onError?: (error: any) => U, onProgress?: (progress: any) => void): Promise<U>;
+        then<U>(onComplete?: (value: T) => IPromise<U>, onError?: (error: any) => U, onProgress?: (progress: any) => void): IPromise<U>;
 
         /**
          * Allows you to specify the work to be done on the fulfillment of the promised value, the error handling to be performed if the promise fails to fulfill a value, and the handling of progress notifications along the way. For more information about the differences between then and done, see the following topics: Quickstart: using promises in JavaScript How to handle errors when using promises in JavaScript Chaining promises in JavaScript.
@@ -1318,7 +1350,7 @@ declare module WinJS {
          * @param onProgress The function to be called if the promise reports progress. Data about the progress is passed as the single argument. Promises are not required to support progress.
          * @returns The promise whose value is the result of executing the onComplete function.
         **/
-        then<U>(onComplete?: (value: T) => U, onError?: (error: any) => Promise<U>, onProgress?: (progress: any) => void): Promise<U>;
+        then<U>(onComplete?: (value: T) => IPromise<U>, onError?: (error: any) => void, onProgress?: (progress: any) => void): IPromise<U>;
 
         /**
          * Allows you to specify the work to be done on the fulfillment of the promised value, the error handling to be performed if the promise fails to fulfill a value, and the handling of progress notifications along the way. For more information about the differences between then and done, see the following topics: Quickstart: using promises in JavaScript How to handle errors when using promises in JavaScript Chaining promises in JavaScript.
@@ -1327,7 +1359,63 @@ declare module WinJS {
          * @param onProgress The function to be called if the promise reports progress. Data about the progress is passed as the single argument. Promises are not required to support progress.
          * @returns The promise whose value is the result of executing the onComplete function.
         **/
-        then<U>(onComplete?: (value: T) => U, onError?: (error: any) => U, onProgress?: (progress: any) => void): Promise<U>;
+        then<U>(onComplete?: (value: T) => U, onError?: (error: any) => IPromise<U>, onProgress?: (progress: any) => void): IPromise<U>;
+
+        /**
+         * Allows you to specify the work to be done on the fulfillment of the promised value, the error handling to be performed if the promise fails to fulfill a value, and the handling of progress notifications along the way. For more information about the differences between then and done, see the following topics: Quickstart: using promises in JavaScript How to handle errors when using promises in JavaScript Chaining promises in JavaScript.
+         * @param onComplete The function to be called if the promise is fulfilled successfully with a value. The value is passed as the single argument. If the value is null, the value is returned. The value returned from the function becomes the fulfilled value of the promise returned by then. If an exception is thrown while this function is being executed, the promise returned by then moves into the error state.
+         * @param onError The function to be called if the promise is fulfilled with an error. The error is passed as the single argument. In different cases this object may be of different types, so it is necessary to test the object for the properties you expect. If the error is null, it is forwarded. The value returned from the function becomes the value of the promise returned by the then function.
+         * @param onProgress The function to be called if the promise reports progress. Data about the progress is passed as the single argument. Promises are not required to support progress.
+         * @returns The promise whose value is the result of executing the onComplete function.
+        **/
+        then<U>(onComplete?: (value: T) => U, onError?: (error: any) => U, onProgress?: (progress: any) => void): IPromise<U>;
+
+        /**
+         * Allows you to specify the work to be done on the fulfillment of the promised value, the error handling to be performed if the promise fails to fulfill a value, and the handling of progress notifications along the way. For more information about the differences between then and done, see the following topics: Quickstart: using promises in JavaScript How to handle errors when using promises in JavaScript Chaining promises in JavaScript.
+         * @param onComplete The function to be called if the promise is fulfilled successfully with a value. The value is passed as the single argument. If the value is null, the value is returned. The value returned from the function becomes the fulfilled value of the promise returned by then. If an exception is thrown while this function is being executed, the promise returned by then moves into the error state.
+         * @param onError The function to be called if the promise is fulfilled with an error. The error is passed as the single argument. In different cases this object may be of different types, so it is necessary to test the object for the properties you expect. If the error is null, it is forwarded. The value returned from the function becomes the value of the promise returned by the then function.
+         * @param onProgress The function to be called if the promise reports progress. Data about the progress is passed as the single argument. Promises are not required to support progress.
+         * @returns The promise whose value is the result of executing the onComplete function.
+        **/
+        then<U>(onComplete?: (value: T) => U, onError?: (error: any) => void, onProgress?: (progress: any) => void): IPromise<U>;
+
+        /**
+         * Allows you to specify the work to be done on the fulfillment of the promised value, the error handling to be performed if the promise fails to fulfill a value, and the handling of progress notifications along the way. For more information about the differences between then and done, see the following topics: Quickstart: using promises in JavaScript How to handle errors when using promises in JavaScript Chaining promises in JavaScript.
+         * @param onComplete The function to be called if the promise is fulfilled successfully with a value. The value is passed as the single argument. If the value is null, the value is returned. The value returned from the function becomes the fulfilled value of the promise returned by then. If an exception is thrown while this function is being executed, the promise returned by then moves into the error state.
+         * @param onError The function to be called if the promise is fulfilled with an error. The error is passed as the single argument. In different cases this object may be of different types, so it is necessary to test the object for the properties you expect. If the error is null, it is forwarded. The value returned from the function becomes the value of the promise returned by the then function.
+         * @param onProgress The function to be called if the promise reports progress. Data about the progress is passed as the single argument. Promises are not required to support progress.
+         * @returns The promise whose value is the result of executing the onComplete function.
+        **/
+        then<U>(onComplete?: (value: T) => void, onError?: (error: any) => IPromise<U>, onProgress?: (progress: any) => void): IPromise<U>;
+
+        /**
+         * Allows you to specify the work to be done on the fulfillment of the promised value, the error handling to be performed if the promise fails to fulfill a value, and the handling of progress notifications along the way. For more information about the differences between then and done, see the following topics: Quickstart: using promises in JavaScript How to handle errors when using promises in JavaScript Chaining promises in JavaScript.
+         * @param onComplete The function to be called if the promise is fulfilled successfully with a value. The value is passed as the single argument. If the value is null, the value is returned. The value returned from the function becomes the fulfilled value of the promise returned by then. If an exception is thrown while this function is being executed, the promise returned by then moves into the error state.
+         * @param onError The function to be called if the promise is fulfilled with an error. The error is passed as the single argument. In different cases this object may be of different types, so it is necessary to test the object for the properties you expect. If the error is null, it is forwarded. The value returned from the function becomes the value of the promise returned by the then function.
+         * @param onProgress The function to be called if the promise reports progress. Data about the progress is passed as the single argument. Promises are not required to support progress.
+         * @returns The promise whose value is the result of executing the onComplete function.
+        **/
+        then<U>(onComplete?: (value: T) => void, onError?: (error: any) => U, onProgress?: (progress: any) => void): IPromise<U>;
+
+        /**
+         * Allows you to specify the work to be done on the fulfillment of the promised value, the error handling to be performed if the promise fails to fulfill a value, and the handling of progress notifications along the way. For more information about the differences between then and done, see the following topics: Quickstart: using promises in JavaScript How to handle errors when using promises in JavaScript Chaining promises in JavaScript.
+         * @param onComplete The function to be called if the promise is fulfilled successfully with a value. The value is passed as the single argument. If the value is null, the value is returned. The value returned from the function becomes the fulfilled value of the promise returned by then. If an exception is thrown while this function is being executed, the promise returned by then moves into the error state.
+         * @param onError The function to be called if the promise is fulfilled with an error. The error is passed as the single argument. In different cases this object may be of different types, so it is necessary to test the object for the properties you expect. If the error is null, it is forwarded. The value returned from the function becomes the value of the promise returned by the then function.
+         * @param onProgress The function to be called if the promise reports progress. Data about the progress is passed as the single argument. Promises are not required to support progress.
+         * @returns The promise whose value is the result of executing the onComplete function.
+        **/
+        then<U>(onComplete?: (value: T) => void, onError?: (error: any) => void, onProgress?: (progress: any) => void): IPromise<U>;
+
+
+        /**
+         * A static helper that functions identically to then() off a promise instance.
+         * @param promise The promise to chain from.
+         * @param onComplete The function to be called if the promise is fulfilled successfully with a value. The value is passed as the single argument. If the value is null, the value is returned. The value returned from the function becomes the fulfilled value of the promise returned by then. If an exception is thrown while this function is being executed, the promise returned by then moves into the error state.
+         * @param onError The function to be called if the promise is fulfilled with an error. The error is passed as the single argument. In different cases this object may be of different types, so it is necessary to test the object for the properties you expect. If the error is null, it is forwarded. The value returned from the function becomes the value of the promise returned by the then function.
+         * @param onProgress The function to be called if the promise reports progress. Data about the progress is passed as the single argument. Promises are not required to support progress.
+         * @returns The promise whose value is the result of executing the onComplete function.
+        **/
+        static then(promise: IPromise<any>, onComplete?: (value: any) => any, onError?: (error: any) => any, onProgress?: (progress: any) => void): IPromise<any>;
 
         /**
          * Performs an operation on all the input promises and returns a promise that has the shape of the input and contains the result of the operation that has been performed on each input.
@@ -1337,7 +1425,7 @@ declare module WinJS {
          * @param progress The function to be called if the promise reports progress. This function takes a single argument, which is the data about the progress of the promise. Promises are not required to support progress.
          * @returns A Promise that is the result of calling join on the values parameter.
         **/
-        static thenEach(values: any, complete?: (value: any) => void, error?: (error: any) => void, progress?: (progress: any) => void): Promise<any>;
+        static thenEach(values: any, complete?: (value: any) => void, error?: (error: any) => void, progress?: (progress: any) => void): IPromise<any>;
 
         /**
          * This method has two forms: WinJS.Promise.timeout(timeout) and WinJS.Promise.timeout(timeout, promise). WinJS.Promise.timeout(timeout) creates a promise that is completed asynchronously after the specified timeout, essentially wrapping a call to setTimeout within a promise. WinJS.Promise.timeout(timeout, promise) sets a timeout period for completion of the specified promise, automatically canceling the promise if it is not completed within the timeout period.
@@ -1345,21 +1433,21 @@ declare module WinJS {
          * @param promise Optional. A promise that will be canceled if it doesn't complete within the timeout period.
          * @returns If the promise parameter is omitted, returns a promise that will be fulfilled after the timeout period. If the promise paramater is provided, the same promise is returned.
         **/
-        static timeout(timeout: number, promise?: Promise<any>): Promise<any>;
+        static timeout(timeout?: number, promise?: IPromise<any>): IPromise<any>;
 
         /**
          * Wraps a non-promise value in a promise. This method is like wrapError, which allows you to produce a Promise in error conditions, in that it allows you to return a Promise in success conditions.
          * @param value Some non-promise value to be wrapped in a promise.
          * @returns A promise that is successfully fulfilled with the specified value.
         **/
-        static wrap<U>(value: U): Promise<U>;
+        static wrap<U>(value?: U): IPromise<U>;
 
         /**
          * Wraps a non-promise error value in a promise. You can use this function if you need to pass an error to a function that requires a promise.
          * @param error A non-promise error value to be wrapped in a promise.
          * @returns A promise that is in an error state with the specified value.
         **/
-        static wrapError<U>(error: U): Promise<U>;
+        static wrapError<U>(error: U): IPromise<U>;
 
         //#endregion Methods
 
@@ -1375,7 +1463,8 @@ declare module WinJS {
      * @param tags The tag or tags to categorize the message (winjs, winjs controls, etc.).
      * @param type The type of message (error, warning, info, etc.).
     **/
-    function log(message: string, tags: string, type: string): void;
+    function log(message: string, tags?: string, type?: string): void;
+    function log(message: () => string, tags?: string, type?: string): void;
 
     /**
      * This method has been deprecated. Strict processing is always on; you don't have to call this method to turn it on.
@@ -1399,8 +1488,9 @@ declare module WinJS {
         user?: string;
         password?: string;
         headers?: any;
-        data: any;
+        data?: any;
         responseType?: string;
+        customRequestInitializer?: (request: XMLHttpRequest) => void;
     }
 
     //#endregion Interfaces
@@ -1408,7 +1498,7 @@ declare module WinJS {
 /**
  * Provides helper functions for defining namespaces. For more information, see Organizing your code with WinJS.Namespace.
 **/
-declare module WinJS.Namespace {
+declare namespace WinJS.Namespace {
     //#region Functions
 
     /**
@@ -1434,7 +1524,7 @@ declare module WinJS.Namespace {
 /**
  * Provides functionality for dealing with basic navigation, including the navigation stack.
 **/
-declare module WinJS.Navigation {
+declare namespace WinJS.Navigation {
     //#region Properties
 
     /**
@@ -1532,7 +1622,7 @@ declare module WinJS.Navigation {
 /**
  * Provides functions for accessing resources and localizing content.
 **/
-declare module WinJS.Resources {
+declare namespace WinJS.Resources {
     //#region Functions
 
     /**
@@ -1561,7 +1651,7 @@ declare module WinJS.Resources {
      * Processes data-win-res attributes on elements and replaces attributes and properties with resource strings.
      * @param rootElement The element to process. The element and its child elements will be processed. If an element isn't specified, the entire document is processed.
     **/
-    function processAll(rootElement?: HTMLElement): void;
+    function processAll(rootElement?: HTMLElement): Promise<void>;
 
     /**
      * Removes an event listener that the addEventListener method registered.
@@ -1587,7 +1677,7 @@ declare module WinJS.Resources {
 /**
  * Provides access to the Windows animations. These functions provide developers with the ability to use animations in their custom controls that are consistent with animations used by Windows controls.
 **/
-declare module WinJS.UI.Animation {
+declare namespace WinJS.UI.Animation {
     //#region Functions
 
     /**
@@ -1666,7 +1756,7 @@ declare module WinJS.UI.Animation {
      * @param offset Initial offsets where the animated objects begin relative to their final position at the end of the animation. Set this parameter to null to use the recommended default offset. Note When the incoming parameter specifies an array of elements, the offset parameter can specify an offset array with each item specified for its corresponding element array item. If the array of offsets is smaller than the array of elements, the last offset is applied to all remaining elements.
      * @returns An object that completes when the animation is finished.
     **/
-    function dragBetweenEnter(target: any, offset: any): Promise<any>;
+    function dragBetweenEnter(target: any, offset?: any): Promise<any>;
 
     /**
      * Performs an animation when a dragged object is moved away from items that it had previously involved in a dragBetweenEnter animation. The affected objects are animated back to their original positions.
@@ -1682,7 +1772,7 @@ declare module WinJS.UI.Animation {
      * @param affected Element or elements whose position the dropped object affects. Typically, this is all other items in a reorderable list. This should be the same element or element collection passed as the affected parameter in the dragSourceStart animation.
      * @returns An object that completes when the animation is finished.
     **/
-    function dragSourceEnd(dragSource: any, offset: any, affected?: any): Promise<any>;
+    function dragSourceEnd(dragSource: any, offset?: any, affected?: any): Promise<any>;
 
     /**
      * Performs an animation when the user begins to drag an object.
@@ -1699,7 +1789,7 @@ declare module WinJS.UI.Animation {
      * @param options Optional. Set this value to { mechanism: "transition" } to play the animation using CSS transitions instead of the default CSS animations. In some cases this can result in improved performance.
      * @returns An object that completes when the animation is finished.
     **/
-    function enterContent(incoming: any, offset: any, options?: any): Promise<any>;
+    function enterContent(incoming: any, offset?: any, options?: any): Promise<any>;
 
     /**
      * Performs an animation that shows a new page of content, either when transitioning between pages in a running app or when displaying the first content in a newly launched app.
@@ -1707,7 +1797,7 @@ declare module WinJS.UI.Animation {
      * @param offset An initial offset where the element or elements begin relative to their final position at the end of the animation. Set this parameter to null to use the recommended default offset. Note When the element parameter specifies an array of elements, the offset parameter can specify an offset array with each item specified for its corresponding element array item. If the array of offsets is smaller than the array of elements, the last offset is applied to all remaining elements.
      * @returns An object that completes when the animation is finished.
     **/
-    function enterPage(element: any, offset: any): Promise<any>;
+    function enterPage(element: any, offset?: any): Promise<any>;
 
     /**
      * Performs an animation that hides one or more elements on a page.
@@ -1715,7 +1805,7 @@ declare module WinJS.UI.Animation {
      * @param offset Initial offsets where the animated objects begin relative to their final position at the end of the animation. Set this parameter to null to use the recommended default offset. Note When the incoming parameter specifies an array of elements, the offset parameter can specify an offset array with each item specified for its corresponding element array item. If the array of offsets is smaller than the array of elements, the last offset is applied to all remaining elements.
      * @returns An object that completes when the animation is finished.
     **/
-    function exitContent(outgoing: any, offset: any): Promise<any>;
+    function exitContent(outgoing: any, offset?: any): Promise<any>;
 
     /**
      * Performs an animation that dismisses the current page when transitioning between pages in an app.
@@ -1723,7 +1813,7 @@ declare module WinJS.UI.Animation {
      * @param offset Initial offsets where the animated objects begin relative to their final position at the end of the animation. Set this parameter to null to use the recommended default offset. Note When the incoming parameter specifies an array of elements, the offset parameter can specify an offset array with each item specified for its corresponding element array item. If the array of offsets is smaller than the array of elements, the last offset is applied to all remaining elements.
      * @returns An object that completes when the animation is finished.
     **/
-    function exitPage(outgoing: any, offset: any): Promise<any>;
+    function exitPage(outgoing: any, offset?: any): Promise<any>;
 
     /**
      * Performs an animation that fades an item or set of items into view.
@@ -1746,7 +1836,7 @@ declare module WinJS.UI.Animation {
      * @param options Optional. Set this value to { mechanism: "transition" } to play the animation using CSS transitions instead of the default CSS animations. In some cases this can result in improved performance.
      * @returns An object that completes when the animation is finished.
     **/
-    function hideEdgeUI(element: any, offset: any, options?: any): Promise<any>;
+    function hideEdgeUI(element: any, offset?: any, options?: any): Promise<any>;
 
     /**
      * Performs an animation that hides a panel.
@@ -1754,7 +1844,7 @@ declare module WinJS.UI.Animation {
      * @param offset Initial offsets where the animated objects begin relative to their final position at the end of the animation. Offsets should be the chosen so that the elements end the animation just off-screen. Note When the element parameter specifies an array of elements, the offset parameter can specify an offset array with each item specified for its corresponding element array item. If the array of offsets is smaller than the array of elements, the last offset is applied to all remaining elements.
      * @returns An object that completes when the animation is finished.
     **/
-    function hidePanel(element: any, offset: any): Promise<any>;
+    function hidePanel(element: any, offset?: any): Promise<any>;
 
     /**
      * Performs an animation that removes pop-up user interface (UI).
@@ -1784,7 +1874,7 @@ declare module WinJS.UI.Animation {
      * @param options Optional. Set this value to { mechanism: "transition" } to play the animation using CSS transitions instead of the default CSS animations. In some cases this can result in improved performance.
      * @returns An object that completes when the animation is finished.
     **/
-    function showEdgeUI(element: any, offset: any, options?: any): Promise<any>;
+    function showEdgeUI(element: any, offset?: any, options?: any): Promise<any>;
 
     /**
      * Performs an animation that slides a large panel user interface (UI) into view.
@@ -1792,7 +1882,7 @@ declare module WinJS.UI.Animation {
      * @param offset Initial offsets where the animated objects begin relative to their final position at the end of the animation. Offsets should be the chosen so that the elements begin the animation from just off-screen. Note When the element parameter specifies an array of elements, the offset parameter can specify an offset array with each item specified for its corresponding element array item. If the array of offsets is smaller than the array of elements, the last offset is applied to all remaining elements.
      * @returns An object that completes when the animation is finished.
     **/
-    function showPanel(element: any, offset: any): Promise<any>;
+    function showPanel(element: any, offset?: any): Promise<any>;
 
     /**
      * Performs an animation that displays a pop-up user interface (UI).
@@ -1800,7 +1890,7 @@ declare module WinJS.UI.Animation {
      * @param offset Initial offsets where the animated objects begin relative to their final position at the end of the animation. Offsets should be the chosen so that the elements begin the animation from just off-screen. Set this parameter to null to use the recommended default offset. Note When the element parameter specifies an array of elements, the offset parameter can specify an offset array with each item specified for its corresponding element array item. If the array of offsets is smaller than the array of elements, the last offset is applied to all remaining elements.
      * @returns An object that completes when the animation is finished.
     **/
-    function showPopup(element: any, offset: any): Promise<any>;
+    function showPopup(element: any, offset?: any): Promise<any>;
 
     /**
      * Performs a deselection animation in response to a swipe interaction.
@@ -1816,7 +1906,7 @@ declare module WinJS.UI.Animation {
      * @param offset An initial offset where the animated objects begin relative to their final position at the end of the animation. Set this parameter to null to use the recommended default offset. Note When the incoming parameter specifies an array of elements, the offset parameter can specify an offset array with each item specified for its corresponding element array item. If the array of offsets is smaller than the array of elements, the last offset is applied to all remaining elements.
      * @returns An object that completes when the animation is finished.
     **/
-    function swipeReveal(target: any, offset: any): Promise<any>;
+    function swipeReveal(target: any, offset?: any): Promise<any>;
 
     /**
      * Performs a selection animation in response to a swipe interaction.
@@ -1832,7 +1922,7 @@ declare module WinJS.UI.Animation {
      * @param offset Initial offsets where incoming animated objects begin relative to their final position at the end of the animation. Set this parameter to null to use the recommended default offset. Note When the incoming parameter specifies an array of elements, the offset parameter can specify an offset array with each item specified for its corresponding element array item. If the array of offsets is smaller than the array of elements, the last offset is applied to all remaining elements.
      * @returns An object that completes when the animation is finished.
     **/
-    function updateBadge(incoming: any, offset: any): Promise<any>;
+    function updateBadge(incoming: any, offset?: any): Promise<any>;
 
     //#endregion Functions
 
@@ -1848,7 +1938,7 @@ declare module WinJS.UI.Animation {
 /**
  * Provides controls and objects that manipulate data.
 **/
-declare module WinJS.UI {
+declare namespace WinJS.UI {
     //#region Enumerations
 
     /**
@@ -2329,31 +2419,8 @@ declare module WinJS.UI {
     /**
      * Provides a mechanism for retrieving IItem objects asynchronously.
     **/
-    interface IItemPromise<T> {
-        //#region Events
-
-        /**
-         * Occurs when there is an error in processing.
-         * @param eventInfo An object that contains information about the event.
-        **/
-        onerror(eventInfo: CustomEvent): void;
-
-        //#endregion Events
-
+    interface IItemPromise<T> extends IPromise<T> {
         //#region Methods
-
-        /**
-         * Attempts to cancel the fulfillment of a promised value. If the promise hasn't already been fulfilled and cancellation is supported, the promise enters the error state with a value of Error("Canceled").
-        **/
-        cancel(): void;
-
-        /**
-         * Allows you to specify the work to be done on the fulfillment of the promised value, the error handling to be performed if the promise fails to fulfill a value, and the handling of progress notifications along the way. After the handlers have finished executing, this function throws any error that would have been returned from then as a promise in the error state.
-         * @param onComplete The function to be called if the promise is fulfilled successfully with a value. The fulfilled value is passed as the single argument. If the value is null, the fulfilled value is returned. The value returned from the function becomes the fulfilled value of the promise returned by then. If an exception is thrown while executing the function, the promise returned by then moves into the error state.
-         * @param onError The function to be called if the promise is fulfilled with an error. The error is passed as the single argument. If it is null, the error is forwarded. The value returned from the function is the fulfilled value of the promise returned by then.
-         * @param onProgress The function to be called if the promise reports progress. Data about the progress is passed as the single argument. Promises are not required to support progress.
-        **/
-        done(onComplete: (item: T) => void, onError?: (error: Error) => void, onProgress?: (progressData: any) => void): void;
 
         /**
          * Stops change notification tracking for the IItem that fulfills this IItemPromise.
@@ -2363,16 +2430,7 @@ declare module WinJS.UI {
         /**
          * Begins change notification tracking for the IItem that fulfills this IItemPromise.
         **/
-        retain(): void;
-
-        /**
-         * Allows you to specify the work to be done on the fulfillment of the promised value, the error handling to be performed if the promise fails to fulfill a value, and the handling of progress notifications along the way.
-         * @param onComplete The function to be called if the promise is fulfilled successfully with a value. The value is passed as the single argument. If the value is null, the value is returned. The value returned from the function becomes the fulfilled value of the promise returned by then. If an exception is thrown while this function is being executed, the promise returned by then moves into the error state.
-         * @param onError The function to be called if the promise is fulfilled with an error. The error is passed as the single argument. If it is null, the error is forwarded. The value returned from the function becomes the fulfilled value of the promise returned by then.
-         * @param onProgress The function to be called if the promise reports progress. Data about the progress is passed as the single argument. Promises are not required to support progress.
-         * @returns The promise whose value is the result of executing the complete or error function.
-        **/
-        then(onComplete: (item: T) => void, onError?: (error: Error) => void, onProgress?: (progressData: any) => void): IItemPromise<T>;
+        retain(): IItemPromise<T>;
 
         //#endregion Methods
 
@@ -3254,6 +3312,11 @@ declare module WinJS.UI {
          * Gets or sets whether the ListView item is focused and is showing its focus visual.
         **/
         showFocus?: boolean;
+
+        /**
+         * Gets the type, if any.
+        **/
+        type?: WinJS.UI.ObjectType;
     }
 
     /**
@@ -3432,7 +3495,7 @@ declare module WinJS.UI {
 
         /**
          * Creates a new AppBar object.
-         * @constructor 
+         * @constructor
          * @param element The DOM element that will host the control.
          * @param options The set of properties and values to apply to the new AppBar.
         **/
@@ -3588,7 +3651,7 @@ declare module WinJS.UI {
 
         /**
          * Creates a new AppBarCommand object.
-         * @constructor 
+         * @constructor
          * @param element The DOM element that will host the control.
          * @param options The set of properties and values to apply to the new AppBarCommand.
         **/
@@ -3710,7 +3773,7 @@ declare module WinJS.UI {
 
         /**
          * Creates a new BackButton.
-         * @constructor 
+         * @constructor
          * @param element The DOM element hosts the new BackButton.
          * @param options An object that contains one or more property/value pairs to apply to the new control. Each property of the options object corresponds to one of the control's properties or events.
         **/
@@ -3775,7 +3838,7 @@ declare module WinJS.UI {
 
         /**
          * Creates a new CellSpanningLayout.
-         * @constructor 
+         * @constructor
          * @param options An object that contains one or more property/value pairs to apply to the new CellSpanningLayout. Each property of the options object corresponds to one of the object's properties or events. Event names must begin with "on".
         **/
         constructor(options?: any);
@@ -3830,10 +3893,10 @@ declare module WinJS.UI {
 
         /**
          * This API supports the WinJS infrastructure and is not intended to be used directly from your code.
-         * @param tree 
-         * @param changedRange 
-         * @param modifiedItems 
-         * @param modifiedGroups 
+         * @param tree
+         * @param changedRange
+         * @param modifiedItems
+         * @param modifiedGroups
         **/
         layout(tree: ILayoutSite2, changedRange: any, modifiedItems: any, modifiedGroups: any): void;
 
@@ -3893,7 +3956,7 @@ declare module WinJS.UI {
 
         /**
          * Initializes a new instance of the DatePicker control.
-         * @constructor 
+         * @constructor
          * @param element The DOM element associated with the DatePicker control.
          * @param options The set of options to be applied initially to the DatePicker control. The options are the following: calendar, current, datePattern, disabled, maxYear, minYear, monthPattern, yearPattern.
         **/
@@ -4052,7 +4115,7 @@ declare module WinJS.UI {
 
         /**
          * Creates a new FlipView.
-         * @constructor 
+         * @constructor
          * @param element The DOM element that hosts the control.
          * @param options An object that contains one or more property/value pairs to apply to the new control. Each property corresponds to one of the control's properties or events. Event names must begin with "on". For example, to provide a handler for the pageselected event, add a property named "onpageselected" and set its value to the event handler.
         **/
@@ -4194,7 +4257,7 @@ declare module WinJS.UI {
 
         /**
          * Creates a new Flyout object.
-         * @constructor 
+         * @constructor
          * @param element The DOM element that will host the control.
          * @param options The set of properties and values to apply to the new Flyout.
         **/
@@ -4264,7 +4327,7 @@ declare module WinJS.UI {
          * @param placement The placement of the Flyout to the anchor: the string literal "top", "bottom", "left", or "right".
          * @param alignment For "top" or "bottom" placement, the alignment of the Flyout to the anchor's edge: the string literal "center", "left", or "right".
         **/
-        show(anchor: HTMLElement, placement: string, alignment: string): void;
+        show(anchor: HTMLElement, placement?: string, alignment?: string): void;
 
         //#endregion Methods
 
@@ -4307,7 +4370,7 @@ declare module WinJS.UI {
 
         /**
          * Creates a new GridLayout object.
-         * @constructor 
+         * @constructor
          * @param options The set of properties and values to apply to the new GridLayout.
         **/
         constructor(options?: any);
@@ -4318,15 +4381,15 @@ declare module WinJS.UI {
 
         /**
          * This method is no longer supported.
-         * @param beginScrollPosition 
-         * @param wholeItem 
+         * @param beginScrollPosition
+         * @param wholeItem
         **/
         calculateFirstVisible(beginScrollPosition: number, wholeItem: boolean): void;
 
         /**
          * This method is no longer supported.
-         * @param endScrollPosition 
-         * @param wholeItem 
+         * @param endScrollPosition
+         * @param wholeItem
         **/
         calculateLastVisible(endScrollPosition: number, wholeItem: boolean): void;
 
@@ -4351,23 +4414,31 @@ declare module WinJS.UI {
         executeAnimations(): void;
 
         /**
+         * Determines the next item to receive keyboard focus.
+         * @param currentItem An object that describes the current item. It has these properties: index, type.
+         * @param pressedKey The key that was pressed.
+         * @returns An object that describes the next item that should receive focus. It has these properties: index, type.
+        **/
+        getAdjacent(currentItem: any, pressedKey: WinJS.Utilities.Key): any;
+
+        /**
          * This method is no longer supported.
-         * @param itemIndex 
+         * @param itemIndex
         **/
         getItemPosition(itemIndex: number): void;
 
         /**
          * This method is no longer supported.
-         * @param itemIndex 
-         * @param element 
-         * @param keyPressed 
+         * @param itemIndex
+         * @param element
+         * @param keyPressed
         **/
         getKeyboardNavigatedItem(itemIndex: number, element: any, keyPressed: any): void;
 
         /**
          * This method is no longer supported.
-         * @param beginScrollPosition 
-         * @param endScrollPosition 
+         * @param beginScrollPosition
+         * @param endScrollPosition
         **/
         getScrollbarRange(beginScrollPosition: number, endScrollPosition: number): void;
 
@@ -4392,7 +4463,7 @@ declare module WinJS.UI {
 
         /**
          * This method is no longer supported.
-         * @param elements 
+         * @param elements
         **/
         itemsAdded(elements: any): void;
 
@@ -4410,50 +4481,50 @@ declare module WinJS.UI {
 
         /**
          * This method is no longer supported.
-         * @param elements 
+         * @param elements
         **/
         itemsRemoved(elements: any): void;
 
         /**
          * This API supports the WinJS infrastructure and is not intended to be used directly from your code.
-         * @param tree 
-         * @param changedRange 
-         * @param modifiedItems 
-         * @param modifiedGroups 
+         * @param tree
+         * @param changedRange
+         * @param modifiedItems
+         * @param modifiedGroups
         **/
         layout(tree: any, changedRange: any, modifiedItems: any, modifiedGroups: any): void;
 
         /**
          * This method is no longer supported.
-         * @param groupIndex 
+         * @param groupIndex
          * @param element A DOM element.
         **/
         layoutHeader(groupIndex: number, element: any): void;
 
         /**
          * This method is no longer supported.
-         * @param itemIndex 
+         * @param itemIndex
          * @param element A DOM element.
         **/
         layoutItem(itemIndex: number, element: any): void;
 
         /**
          * This method is no longer supported.
-         * @param element 
+         * @param element
         **/
         prepareHeader(element: HTMLElement): void;
 
         /**
          * This method is no longer supported.
-         * @param itemIndex 
+         * @param itemIndex
          * @param element A DOM element.
         **/
         prepareItem(itemIndex: number, element: any): void;
 
         /**
          * This method is no longer supported.
-         * @param item 
-         * @param newItem 
+         * @param item
+         * @param newItem
         **/
         releaseItem(item: any, newItem: any): void;
 
@@ -4464,7 +4535,7 @@ declare module WinJS.UI {
 
         /**
          * This method is no longer supported.
-         * @param layoutSite 
+         * @param layoutSite
         **/
         setSite(layoutSite: any): void;
 
@@ -4475,8 +4546,8 @@ declare module WinJS.UI {
 
         /**
          * This method is no longer supported.
-         * @param beginScrollPosition 
-         * @param endScrollPositionScrollPosition 
+         * @param beginScrollPosition
+         * @param endScrollPositionScrollPosition
         **/
         startLayout(beginScrollPosition: number, endScrollPositionScrollPosition: number): void;
 
@@ -4487,7 +4558,7 @@ declare module WinJS.UI {
 
         /**
          * This method is no longer supported.
-         * @param count 
+         * @param count
         **/
         updateBackdrop(count: number): void;
 
@@ -4557,7 +4628,7 @@ declare module WinJS.UI {
 
         /**
          * Creates a new Hub control.
-         * @constructor 
+         * @constructor
          * @param element The DOM element that will host the Hub control.
          * @param options An object that contains one or more property/value pairs to apply to the new control. Each property of the options object corresponds to one of the control's properties or events. Event names must begin with "on". For example, to provide a handler for the contentanimating event, add a property named "oncontentanimating" to the options object and set its value to the event handler.
         **/
@@ -4670,7 +4741,7 @@ declare module WinJS.UI {
         /**
          * This API supports the SemanticZoom infrastructure and is not intended to be used directly from your code.
         **/
-        zoomableView: IZoomableView<Hub>;
+        zoomableView: IZoomableView<any>;
 
         //#endregion Properties
 
@@ -4684,7 +4755,7 @@ declare module WinJS.UI {
 
         /**
          * Creates a new HubSection.
-         * @constructor 
+         * @constructor
          * @param element The DOM element hosts the new HubSection.
          * @param options An object that contains one or more property/value pairs to apply to the new control. Each property of the options object corresponds to one of the control's properties or events.
         **/
@@ -4753,7 +4824,7 @@ declare module WinJS.UI {
 
         /**
          * Creates a new ItemContainer.
-         * @constructor 
+         * @constructor
          * @param element The DOM element hosts the new ItemContainer. For the ItemContainer to be accessible, this element must have its role attribute set to "list" or "listbox". If tapBehavior is set to none and selectionDisabled is true, then use the "list" role; otherwise, use the "listbox" role.
          * @param options An object that contains one or more property/value pairs to apply to the new control. Each property of the options object corresponds to one of the control's properties or events.
         **/
@@ -4876,7 +4947,7 @@ declare module WinJS.UI {
 
         /**
          * Creates a new ListLayout.
-         * @constructor 
+         * @constructor
          * @param options An object that contains one or more property/value pairs to apply to the new ListLayout. Each property of the options object corresponds to one of the object's properties or events. Event names must begin with "on".
         **/
         constructor(options?: any);
@@ -4887,15 +4958,15 @@ declare module WinJS.UI {
 
         /**
          * This method is no longer supported.
-         * @param beginScrollPosition 
-         * @param wholeItem 
+         * @param beginScrollPosition
+         * @param wholeItem
         **/
         calculateFirstVisible(beginScrollPosition: number, wholeItem: boolean): void;
 
         /**
          * This method is no longer supported.
-         * @param endScrollPosition 
-         * @param wholeItem 
+         * @param endScrollPosition
+         * @param wholeItem
         **/
         calculateLastVisible(endScrollPosition: number, wholeItem: boolean): void;
 
@@ -4920,23 +4991,31 @@ declare module WinJS.UI {
         executeAnimations(): void;
 
         /**
+         * Determines the next item to receive keyboard focus.
+         * @param currentItem An object that describes the current item. It has these properties: index, type.
+         * @param pressedKey The key that was pressed.
+         * @returns An object that describes the next item that should receive focus. It has these properties: index, type.
+        **/
+        getAdjacent(currentItem: any, pressedKey: WinJS.Utilities.Key): any;
+
+        /**
          * This method is no longer supported.
-         * @param itemIndex 
+         * @param itemIndex
         **/
         getItemPosition(itemIndex: number): void;
 
         /**
          * This method is no longer supported.
-         * @param itemIndex 
-         * @param element 
-         * @param keyPressed 
+         * @param itemIndex
+         * @param element
+         * @param keyPressed
         **/
         getKeyboardNavigatedItem(itemIndex: number, element: HTMLElement, keyPressed: any): void;
 
         /**
          * This method is no longer supported.
-         * @param beginScrollPosition 
-         * @param endScrollPosition 
+         * @param beginScrollPosition
+         * @param endScrollPosition
         **/
         getScrollbarRange(beginScrollPosition: number, endScrollPosition: number): void;
 
@@ -4959,14 +5038,14 @@ declare module WinJS.UI {
 
         /**
          * This method is no longer supported.
-         * @param elements 
+         * @param elements
         **/
         itemsAdded(elements: any): void;
 
         /**
          * This API supports the WinJS infrastructure and is not intended to be used directly from your code.
-         * @param firstPixel 
-         * @param lastPixel 
+         * @param firstPixel
+         * @param lastPixel
         **/
         itemsFromRange(firstPixel: number, lastPixel: number): void;
 
@@ -4977,50 +5056,50 @@ declare module WinJS.UI {
 
         /**
          * This method is no longer supported.
-         * @param elements 
+         * @param elements
         **/
         itemsRemoved(elements: any): void;
 
         /**
          * This API supports the WinJS infrastructure and is not intended to be used directly from your code.
-         * @param tree 
-         * @param changedRange 
-         * @param modifiedItems 
-         * @param modifiedGroups 
+         * @param tree
+         * @param changedRange
+         * @param modifiedItems
+         * @param modifiedGroups
         **/
         layout(tree: any, changedRange: any, modifiedItems: any, modifiedGroups: any): void;
 
         /**
          * This method is no longer supported.
-         * @param groupIndex 
+         * @param groupIndex
          * @param element A DOM element.
         **/
         layoutHeader(groupIndex: number, element: any): void;
 
         /**
          * This method is no longer supported.
-         * @param itemIndex 
+         * @param itemIndex
          * @param element A DOM element.
         **/
         layoutItem(itemIndex: number, element: any): void;
 
         /**
          * This method is no longer supported.
-         * @param element 
+         * @param element
         **/
         prepareHeader(element: HTMLElement): void;
 
         /**
          * This method is no longer supported.
-         * @param itemIndex 
+         * @param itemIndex
          * @param element A DOM element.
         **/
         prepareItem(itemIndex: number, element: any): void;
 
         /**
          * This method is no longer supported.
-         * @param item 
-         * @param newItem 
+         * @param item
+         * @param newItem
         **/
         releaseItem(item: any, newItem: any): void;
 
@@ -5031,7 +5110,7 @@ declare module WinJS.UI {
 
         /**
          * This method is no longer supported.
-         * @param layoutSite 
+         * @param layoutSite
         **/
         setSite(layoutSite: any): void;
 
@@ -5042,8 +5121,8 @@ declare module WinJS.UI {
 
         /**
          * This method is no longer supported.
-         * @param beginScrollPosition 
-         * @param endScrollPositionScrollPosition 
+         * @param beginScrollPosition
+         * @param endScrollPositionScrollPosition
         **/
         startLayout(beginScrollPosition: number, endScrollPositionScrollPosition: number): void;
 
@@ -5054,7 +5133,7 @@ declare module WinJS.UI {
 
         /**
          * This method is no longer supported.
-         * @param count 
+         * @param count
         **/
         updateBackdrop(count: number): void;
 
@@ -5114,7 +5193,7 @@ declare module WinJS.UI {
 
         /**
          * Creates a new ListView.
-         * @constructor 
+         * @constructor
          * @param element The DOM element that hosts the ListView control.
          * @param options An object that contains one or more property/value pairs to apply to the new control. Each property of the options object corresponds to one of the control's properties or events. Event names must begin with "on". For example, to provide a handler for the selectionchanged event, add a property named "onselectionchanged" to the options object and set its value to the event handler.
         **/
@@ -5427,7 +5506,7 @@ declare module WinJS.UI {
 
         /**
          * Creates a new Menu object.
-         * @constructor 
+         * @constructor
          * @param element The DOM element that will host the control.
          * @param options The set of properties and values to apply to the new Menu.
         **/
@@ -5511,7 +5590,7 @@ declare module WinJS.UI {
          * @param placement The placement of the Menu to the anchor: top, bottom, left, or right.
          * @param alignment For top or bottom placement, the alignment of the Menu to the anchor's edge: center, left, or right.
         **/
-        show(anchor: HTMLElement, placement: string, alignment: string): void;
+        show(anchor: HTMLElement, placement?: string, alignment?: string): void;
 
         /**
          * Shows the specified commands of the Menu.
@@ -5573,7 +5652,7 @@ declare module WinJS.UI {
 
         /**
          * Creates a new MenuCommand object.
-         * @constructor 
+         * @constructor
          * @param element The DOM element that will host the control.
          * @param options The set of properties and values to apply to the new MenuCommand.
         **/
@@ -5670,7 +5749,7 @@ declare module WinJS.UI {
 
         /**
          * Creates a new NavBar.
-         * @constructor 
+         * @constructor
          * @param element The DOM element that will host the new NavBar.
          * @param options An object that contains one or more property/value pairs to apply to the new control. Each property of the options object corresponds to one of the control's properties or events.
         **/
@@ -5825,7 +5904,7 @@ declare module WinJS.UI {
 
         /**
          * Creates a new NavBarCommand.
-         * @constructor 
+         * @constructor
          * @param element The DOM element hosts the new NavBarCommand.
          * @param options An object that contains one or more property/value pairs to apply to the new control. Each property of the options object corresponds to one of the control's properties or events.
         **/
@@ -5920,7 +5999,7 @@ declare module WinJS.UI {
 
         /**
          * Creates a new NavBarContainer.
-         * @constructor 
+         * @constructor
          * @param element The DOM element hosts the new NavBarContainer.
          * @param options An object that contains one or more property/value pairs to apply to the new control. Each property of the options object corresponds to one of the control's properties or events.
         **/
@@ -6031,7 +6110,7 @@ declare module WinJS.UI {
 
         /**
          * Creates a new Rating.
-         * @constructor 
+         * @constructor
          * @param element The DOM element hosts the new Rating.
          * @param options An object that contains one or more property/value pairs to apply to the new control. Each property of the options object corresponds to one of the control's properties or events. Event names must begin with "on". For example, to provide a handler for the cancel event, add a property named "oncancel" to the options object and set its value to the event handler.
         **/
@@ -6135,10 +6214,11 @@ declare module WinJS.UI {
 
         /**
          * Creates a new Repeater control.
-         * @constructor 
+         * @constructor
+         * @param elemnt The DOM element that will host the new control. The Repeater will create an element if this value is null.
          * @param options An object that contains one or more property/value pairs to apply to the new Repeater. Each property of the options object corresponds to one of the object's properties or events. Event names must begin with "on".
         **/
-        constructor(options?: any);
+        constructor(element?: HTMLElement, options?: any);
 
         //#endregion Constructors
 
@@ -6286,7 +6366,7 @@ declare module WinJS.UI {
 
         /**
          * Creates a new SearchBox.
-         * @constructor 
+         * @constructor
          * @param element The DOM element hosts the new SearchBox.
          * @param options An object that contains one or more property/value pairs to apply to the new control. Each property of the options object corresponds to one of the control's properties or events.
         **/
@@ -6411,6 +6491,8 @@ declare module WinJS.UI {
 
         //#endregion Properties
 
+        static createResultSuggestionImage(url: string): any;
+
     }
 
     /**
@@ -6421,7 +6503,7 @@ declare module WinJS.UI {
 
         /**
          * Creates a new SemanticZoom.
-         * @constructor 
+         * @constructor
          * @param element The DOM element that hosts the SemanticZoom.
          * @param options An object that contains one or more property/value pairs to apply to the new control. This object can contain these properties: initiallyZoomedOut Boolean, zoomFactor 0.2–0.85.
         **/
@@ -6521,7 +6603,7 @@ declare module WinJS.UI {
 
         /**
          * Creates a new SettingsFlyout object.
-         * @constructor 
+         * @constructor
          * @param element The DOM element that will host the control.
          * @param options The set of properties and values to apply to the new SettingsFlyout.
         **/
@@ -6682,7 +6764,7 @@ declare module WinJS.UI {
 
         /**
          * Creates a new TabContainer.
-         * @constructor 
+         * @constructor
          * @param element The DOM element that hosts the TabContainer control.
          * @param options An object that contains one or more property/value pairs to apply to the new control. Each property of the options object corresponds to one of the control's properties.
         **/
@@ -6723,7 +6805,7 @@ declare module WinJS.UI {
 
         /**
          * Initializes a new instance of a TimePicker control.
-         * @constructor 
+         * @constructor
          * @param element The DOM element associated with the TimePicker control.
          * @param options The set of options to be applied initially to the TimePicker control. The options are the following: clock.
         **/
@@ -6836,7 +6918,7 @@ declare module WinJS.UI {
 
         /**
          * Creates a new ToggleSwitch.
-         * @constructor 
+         * @constructor
          * @param element The DOM that hosts the control.
          * @param options An object that contains one or more property/value pairs to apply to the new control. Each property of the options object corresponds to one of the control's properties or events. Event names must begin with "on". For example, to provide a handler for the change event, add a property named "onchange" to the options object and set its value to the event handler.
         **/
@@ -7111,6 +7193,13 @@ declare module WinJS.UI {
     }
 
     /**
+     * A special data source for VirtualizedDataSource.computeDataSourceGroups
+     **/
+    interface IListGroupDataSource<T> extends IListDataSource<T> {
+        groups: IListDataSource<T>;
+    }
+
+    /**
      * Serves as the base class for a custom IListDataSource.
     **/
     class VirtualizedDataSource<T> {
@@ -7118,7 +7207,7 @@ declare module WinJS.UI {
 
         /**
          * Initializes the VirtualizedDataSource base class of a custom data source.
-         * @constructor 
+         * @constructor
          * @param listDataAdapter The object that supplies data to the VirtualizedDataSource.
          * @param options An object that can contain properties that specify additional options for the VirtualizedDataSource. It supports these properties: cacheSize.
         **/
@@ -7176,9 +7265,9 @@ declare module WinJS.UI {
      * @param groupKey A callback function that accepts a single argument: an item in the IListDataSource. The function is called for each item in the list and must return the group key for that item as a string.
      * @param groupData A callback function that accepts a single argument: an item in the IListDataSource. The function is called on one IListDataSource item for each group and must return an object that represents the header of that group.
      * @param options An object that can contain properties that specify additional options: groupCountEstimate, batchSize.
-     * @returns An IListDataSource that contains the items in the original data source and provides additional group information in the form of a "groups" property. The "groups" property returns another IListDataSource that enumerates the different groups in the list.
+     * @returns An IListGroupDataSource that contains the items in the original data source and provides additional group information in the form of a "groups" property. The "groups" property returns another IListDataSource that enumerates the different groups in the list.
     **/
-    function computeDataSourceGroups<T>(listDataSource: IListDataSource<T>, groupKey: Function, groupData: Function, options?: any): IListDataSource<T>;
+    function computeDataSourceGroups<T>(listDataSource: IListDataSource<T>, groupKey: Function, groupData: Function, options?: any): IListGroupDataSource<T>;
 
     /**
      * Used to disables all Animations Library and ListView animations. Calling this function does not guarantee that the animations will be disabled, as the determination is made based on several factors.
@@ -7263,7 +7352,7 @@ declare module WinJS.UI {
 /**
  * Provides functions to load HTML content programmatically.
 **/
-declare module WinJS.UI.Fragments {
+declare namespace WinJS.UI.Fragments {
     //#region Functions
 
     /**
@@ -7278,6 +7367,7 @@ declare module WinJS.UI.Fragments {
      * @param href The URI that contains the fragment to be cleared. If no URI is provided, the entire contents of the cache are cleared.
     **/
     function clearCache(href: string): void;
+    function clearCache(href: HTMLElement): void;
 
     /**
      * Loads the contents of the specified URI into the specified element without copying it.
@@ -7294,6 +7384,7 @@ declare module WinJS.UI.Fragments {
      * @returns A promise that is fulfilled when the fragment has been loaded. If a target element is not specified, the copied fragment is the completed value. The fragment is added to the cache. See also render, where the element is not added to the cache.
     **/
     function renderCopy(href: string, target?: HTMLElement): Promise<HTMLElement>;
+    function renderCopy(href: HTMLElement, target?: HTMLElement): Promise<HTMLElement>;
 
     //#endregion Functions
 
@@ -7301,7 +7392,7 @@ declare module WinJS.UI.Fragments {
 /**
  * Provides methods for defining and displaying PageControl objects.
 **/
-declare module WinJS.UI.Pages {
+declare namespace WinJS.UI.Pages {
     //#region Interfaces
 
     /**
@@ -7315,7 +7406,7 @@ declare module WinJS.UI.Pages {
          * @param err The error that occurred.
          * @returns Nothing if the error was handled, or an error promise if the error was not handled.
         **/
-        error? (err: any): Promise<any>;
+        error? (err: any): any;
 
         /**
          * Initializes the control before the content of the control is set. Use the processed method for any initialization that should be done after the content of the control has been set.
@@ -7323,14 +7414,14 @@ declare module WinJS.UI.Pages {
          * @param options The options passed to the constructor of the page.
          * @returns A promise that is fulfilled when initialization is complete, if asynchronous processing is necessary. If not, returns nothing.
         **/
-        init? (element: HTMLElement, options: any): Promise<any>;
+        init? (element: HTMLElement, options: any): any;
 
         /**
          * Creates DOM objects from the content in the specified URI. This method is called after the PageControl is defined and before the init method is called.
          * @param uri The URI from which to create DOM objects.
          * @returns A promise whose fulfilled value is the set of unparented DOM objects.
         **/
-        load? (uri: string): Promise<any>;
+        load? (uri: string): any;
 
         /**
          * Initializes the control after the content of the control is set.
@@ -7338,7 +7429,7 @@ declare module WinJS.UI.Pages {
          * @param options The options that are to be passed to the constructor of the page.
          * @returns A promise that is fulfilled when initialization is complete, if asynchronous processing is necessary. If not, returns nothing.
         **/
-        processed? (element: HTMLElement, options: any): Promise<any>;
+        processed? (element: HTMLElement, options: any): any;
 
         /**
          * Called after all initialization and rendering is complete. At this time, the element is ready for use.
@@ -7346,7 +7437,7 @@ declare module WinJS.UI.Pages {
          * @param options An object that contains one or more property/value pairs to apply to the PageControl. How these property/value pairs are used (or not used) depends on the implementation of that particular PageControl.
          * @returns A promise that is fulfilled when the element is ready for use, if asynchronous processing is necessary. If not, returns nothing.
         **/
-        ready? (element: HTMLElement, options: any): Promise<any>;
+        ready? (element: HTMLElement, options: any): any;
 
         /**
          * Takes the elements returned by the load method and attaches them to the specified element.
@@ -7364,11 +7455,6 @@ declare module WinJS.UI.Pages {
 
     //#region Objects
 
-    /**
-     * A modular unit of HTML, CSS, and JavaScript that can be navigated to or used as a custom WinJS control.
-    **/
-    class PageControl {
-    }
 
     //#endregion Objects
 
@@ -7380,14 +7466,14 @@ declare module WinJS.UI.Pages {
      * @param members An object that defines the members that the control will have.
      * @returns A constructor function that creates the PageControl.
     **/
-    function define(uri: string, members: IPageControlMembers): PageControl;
+    function define(uri: string, members: IPageControlMembers): (element?: HTMLElement, options?: any, complete?: (page: any) => void, parentedPromise?: Promise<any>) => void;
 
     /**
      * Gets an already-defined page control for the specified URI, or creates a new one.
      * @param uri The URI for the content that defines the page.
      * @returns A constructor function that creates the page.
     **/
-    function get(uri: string): Function;
+    function get(uri: string): (element?: HTMLElement, options?: any, complete?: (page: any) => void, parentedPromise?: Promise<any>) => void;
 
     /**
      * Creates a PageControl from the specified URI and inserts it inside the specified element.
@@ -7397,7 +7483,7 @@ declare module WinJS.UI.Pages {
      * @param parentedPromise A Promise that is fulfilled when the new PageControl is done rendering and its contents becomes the child of element.
      * @returns A promise that is fulfilled when rendering is complete, if asynchronous processing is necessary. If not, returns nothing.
     **/
-    function render(uri: string, element: HTMLElement, options?: any, parentedPromise?: Promise<any>): Promise<void>;
+    function render(uri: string, element?: HTMLElement, options?: any, parentedPromise?: Promise<any>): Promise<any>;
 
     //#endregion Functions
 
@@ -7405,7 +7491,7 @@ declare module WinJS.UI.Pages {
 /**
  * Provides methods for detecting when the user tabs to or from DOM elements.
 **/
-declare module WinJS.UI.TrackTabBehavior {
+declare namespace WinJS.UI.TrackTabBehavior {
     //#region Functions
 
     /**
@@ -7427,7 +7513,7 @@ declare module WinJS.UI.TrackTabBehavior {
 /**
  * Provides helper functions, for example, functions to add and remove CSS classes.
 **/
-declare module WinJS.Utilities {
+declare namespace WinJS.Utilities {
     //#region Enumerations
 
     /**
@@ -7962,6 +8048,12 @@ declare module WinJS.Utilities {
         include(items: T[]): void;
 
         /**
+         * Adds a set of items to this QueryCollection.
+         * @param items The items to add to the QueryCollection. This may be an array-like object, a document fragment, or a single item.
+        **/
+        include(items: HTMLCollection): void;
+
+        /**
          * Registers the listener for the specified event on all the elements in the collection.
          * @param eventType The name of the event.
          * @param listener The event handler function to be called when the event occurs.
@@ -8015,7 +8107,7 @@ declare module WinJS.Utilities {
          * @param renderDonePromiseCallback If supplied, this function is called each time the template gets rendered, and is passed a promise that is fulfilled when the template rendering is complete.
          * @returns The QueryCollection.
         **/
-        template(templateElement: HTMLElement, data: any, renderDonePromiseCallback: Function): QueryCollection<T>;
+        template(templateElement: HTMLElement, data: any, renderDonePromiseCallback?: Function): QueryCollection<T>;
 
         /**
          * Toggles (adds or removes) the specified class on all the elements in the collection. If the class is present, it is removed; if it is absent, it is added.
@@ -8142,7 +8234,7 @@ declare module WinJS.Utilities {
      * @param parent The parent element.
      * @returns The relative left coordinate.
     **/
-    function getRelativeLeft(element: HTMLElement, parent: HTMLElement): number;
+    function getRelativeLeft(element?: HTMLElement, parent?: HTMLElement): number;
 
     /**
      * Gets the top coordinate of the element relative to the specified parent.
@@ -8150,7 +8242,7 @@ declare module WinJS.Utilities {
      * @param parent The parent element.
      * @returns The relative top coordinate.
     **/
-    function getRelativeTop(element: HTMLElement, parent: HTMLElement): number;
+    function getRelativeTop(element?: HTMLElement, parent?: HTMLElement): number;
 
     /**
      * Gets the height of the element, including its margins.
@@ -8202,7 +8294,7 @@ declare module WinJS.Utilities {
      * @param element The element to mark as disposable.
      * @param disposeImpl The function containing the element-specific dispose logic, called by the dispose function that markDisposable attaches.
     **/
-    function markDisposable(element: HTMLElement, disposeImpl: Function): void;
+    function markDisposable(element: HTMLElement, disposeImpl?: Function): void;
 
     /**
      * Marks a function as being compatible with declarative processing. Declarative processing is performed by WinJS.UI.processAll or WinJS.Binding.processAll.
@@ -8275,6 +8367,7 @@ declare module WinJS.Utilities {
      * @param options The tags for messages to log. Multiple tags should be separated by spaces. May contain type, tags, excludeTags and action properties.
     **/
     function startLog(options?: ILogOptions): void;
+    function startLog(tags?: string): void;
 
     /**
      * Removes the WinJS logger that had previously been set up.
@@ -8303,10 +8396,10 @@ declare module WinJS.Utilities {
     //#region Interfaces
 
     interface ILogOptions {
-        type: string;
+        type?: string;
         action?: (message: string, tags: string, type: string) => void;
-        excludeTags: string;
-        tags: string;
+        excludeTags?: string;
+        tags?: string;
     }
 
     interface IPosition {
@@ -8322,7 +8415,7 @@ declare module WinJS.Utilities {
 /**
  * Provides functions and objects for scheduling and managing asynchronous tasks.
 **/
-declare module WinJS.Utilities.Scheduler {
+declare namespace WinJS.Utilities.Scheduler {
     //#region Enumerations
 
     /**
@@ -8469,6 +8562,15 @@ declare module WinJS.Utilities.Scheduler {
     }
 
     //#endregion Interfaces
+
+    //#region Properties
+
+    /**
+     * Gets the current priority at which the caller is executing.
+     **/
+    var currentPriority: Priority;
+
+    //#endregion Properties
 
     //#region Functions
 

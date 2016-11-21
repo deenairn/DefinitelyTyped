@@ -1,4 +1,4 @@
-/// <reference path="./bigint.d.ts" />
+
 
 var bi: BigInt.BigInt;
 var num: number;
@@ -49,7 +49,7 @@ bi = BigInt.trim(bi, num);
 BigInt.addInt_(bi, num);
 BigInt.add_(bi, bi);
 BigInt.copy_(bi, bi);
-num = BigInt.copyInt_(bi, num);
+BigInt.copyInt_(bi, num);
 BigInt.GCD_(bi, bi);
 b = BigInt.inverseMod_(bi, bi);
 BigInt.mod_(bi, bi);

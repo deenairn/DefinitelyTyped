@@ -1,7 +1,7 @@
 // Type definitions for Node.js v0.8.8
 // Project: http://nodejs.org/
 // Definitions by: Microsoft TypeScript <http://typescriptlang.org>
-// Definitions: https://github.com/borisyankov/DefinitelyTyped
+// Definitions: https://github.com/DefinitelyTyped/DefinitelyTyped
 
 /************************************************
 *                                               *
@@ -68,6 +68,13 @@ declare var Buffer: {
 *                   INTERFACES                  *
 *                                               *
 ************************************************/
+interface ErrnoException extends Error {
+    errno?: number;
+    code?: string;
+    path?: string;
+    syscall?: string;
+    stack?: string;
+}
 
 interface EventEmitter {
     addListener(event: string, listener: Function);
@@ -143,7 +150,7 @@ interface NodeProcess extends EventEmitter {
         visibility: string;
     };
     };
-    kill(pid: number, signal?: string): void;
+    kill(pid:number, signal?: string|number): void;
     pid: number;
     title: string;
     arch: string;
@@ -163,7 +170,7 @@ interface Buffer {
     length: number;
     copy(targetBuffer: Buffer, targetStart?: number, sourceStart?: number, sourceEnd?: number): number;
     slice(start?: number, end?: number): Buffer;
-    readUInt8(offset: number, noAsset?: boolean): number;
+    readUInt8(offset: number, noAssert?: boolean): number;
     readUInt16LE(offset: number, noAssert?: boolean): number;
     readUInt16BE(offset: number, noAssert?: boolean): number;
     readUInt32LE(offset: number, noAssert?: boolean): number;
@@ -203,8 +210,8 @@ interface Buffer {
 declare module "querystring" {
     export function stringify(obj: any, sep?: string, eq?: string): string;
     export function parse(str: string, sep?: string, eq?: string, options?: { maxKeys?: number; }): any;
-    export function escape(): any;
-    export function unescape(): any;
+    export function escape(str: string): string;
+    export function unescape(str: string): string;
 }
 
 declare module "events" {
@@ -319,7 +326,7 @@ declare module "cluster" {
     export function disconnect(callback?: Function): void;
     export var workers: any;
 
-    // Event emitter    
+    // Event emitter
     export function addListener(event: string, listener: Function): void;
     export function on(event: string, listener: Function): any;
     export function once(event: string, listener: Function): void;
@@ -538,6 +545,7 @@ declare module "child_process" {
         pid: number;
         kill(signal?: string): void;
         send(message: any, sendHandle: any): void;
+        connected: boolean;
         disconnect(): void;
     }
 
@@ -566,7 +574,7 @@ declare module "child_process" {
         env?: any;
         encoding?: string;
         timeout?: number;
-        maxBuffer?: string;
+        maxBuffer?: number;
         killSignal?: string;
     }, callback: (error: Error, stdout: Buffer, stderr: Buffer) =>void ): ChildProcess;
     export function fork(modulePath: string, args?: string[], options?: {
@@ -612,6 +620,7 @@ declare module "dns" {
 
 declare module "net" {
     import stream = require("stream");
+    import events = require("events");
 
     export interface NodeSocket extends stream.ReadWriteStream {
         // Extended base methods
@@ -641,7 +650,7 @@ declare module "net" {
         new (options?: { fd?: string; type?: string; allowHalfOpen?: boolean; }): NodeSocket;
     };
 
-    export interface Server extends NodeSocket {
+    export interface Server extends events.NodeEventEmitter {
         listen(port: number, host?: string, backlog?: number, listeningListener?: Function): void;
         listen(path: string, listeningListener?: Function): void;
         listen(handle: any, listeningListener?: Function): void;
@@ -649,6 +658,49 @@ declare module "net" {
         address(): { port: number; family: string; address: string; };
         maxConnections: number;
         connections: number;
+
+        /**
+         * events.EventEmitter
+         *   1. close
+         *   2. connection
+         *   3. error
+         *   4. listening
+         */
+        addListener(event: string, listener: Function): this;
+        addListener(event: "close", listener: () => void): this;
+        addListener(event: "connection", listener: (socket: NodeSocket) => void): this;
+        addListener(event: "error", listener: (err: Error) => void): this;
+        addListener(event: "listening", listener: () => void): this;
+
+        emit(event: string, ...args: any[]): boolean;
+        emit(event: "close"): boolean;
+        emit(event: "connection", socket: NodeSocket): boolean;
+        emit(event: "error", err: Error): boolean;
+        emit(event: "listening"): boolean;
+
+        on(event: string, listener: Function): this;
+        on(event: "close", listener: () => void): this;
+        on(event: "connection", listener: (socket: NodeSocket) => void): this;
+        on(event: "error", listener: (err: Error) => void): this;
+        on(event: "listening", listener: () => void): this;
+
+        once(event: string, listener: Function): this;
+        once(event: "close", listener: () => void): this;
+        once(event: "connection", listener: (socket: NodeSocket) => void): this;
+        once(event: "error", listener: (err: Error) => void): this;
+        once(event: "listening", listener: () => void): this;
+
+        prependListener(event: string, listener: Function): this;
+        prependListener(event: "close", listener: () => void): this;
+        prependListener(event: "connection", listener: (socket: NodeSocket) => void): this;
+        prependListener(event: "error", listener: (err: Error) => void): this;
+        prependListener(event: "listening", listener: () => void): this;
+
+        prependOnceListener(event: string, listener: Function): this;
+        prependOnceListener(event: "close", listener: () => void): this;
+        prependOnceListener(event: "connection", listener: (socket: NodeSocket) => void): this;
+        prependOnceListener(event: "error", listener: (err: Error) => void): this;
+        prependOnceListener(event: "listening", listener: () => void): this;
     }
     export function createServer(connectionListener?: (socket: NodeSocket) =>void ): Server;
     export function createServer(options?: { allowHalfOpen?: boolean; }, connectionListener?: (socket: NodeSocket) =>void ): Server;
@@ -730,9 +782,9 @@ declare module "fs" {
     export function fchmodSync(fd: string, mode: string): void;
     export function lchmod(path: string, mode: string, callback?: Function): void;
     export function lchmodSync(path: string, mode: string): void;
-    export function stat(path: string, callback?: (err: Error, stats: Stats) =>any): Stats;
-    export function lstat(path: string, callback?: (err: Error, stats: Stats) =>any): Stats;
-    export function fstat(fd: string, callback?: (err: Error, stats: Stats) =>any): Stats;
+    export function stat(path: string, callback?: (err: ErrnoException, stats: Stats) =>any): Stats;
+    export function lstat(path: string, callback?: (err: ErrnoException, stats: Stats) =>any): Stats;
+    export function fstat(fd: string, callback?: (err: ErrnoException, stats: Stats) =>any): Stats;
     export function statSync(path: string): Stats;
     export function lstatSync(path: string): Stats;
     export function fstatSync(fd: string): Stats;
@@ -740,9 +792,9 @@ declare module "fs" {
     export function linkSync(srcpath: string, dstpath: string): void;
     export function symlink(srcpath: string, dstpath: string, type?: string, callback?: Function): void;
     export function symlinkSync(srcpath: string, dstpath: string, type?: string): void;
-    export function readlink(path: string, callback?: (err: Error, linkString: string) =>any): void;
-    export function realpath(path: string, callback?: (err: Error, resolvedPath: string) =>any): void;
-    export function realpath(path: string, cache: string, callback: (err: Error, resolvedPath: string) =>any): void;
+    export function readlink(path: string, callback?: (err: ErrnoException, linkString: string) =>any): void;
+    export function realpath(path: string, callback?: (err: ErrnoException, resolvedPath: string) =>any): void;
+    export function realpath(path: string, cache: string, callback: (err: ErrnoException, resolvedPath: string) =>any): void;
     export function realpathSync(path: string, cache?: string): void;
     export function unlink(path: string, callback?: Function): void;
     export function unlinkSync(path: string): void;
@@ -750,11 +802,11 @@ declare module "fs" {
     export function rmdirSync(path: string): void;
     export function mkdir(path: string, mode?: string, callback?: Function): void;
     export function mkdirSync(path: string, mode?: string): void;
-    export function readdir(path: string, callback?: (err: Error, files: string[]) => void): void;
+    export function readdir(path: string, callback?: (err: ErrnoException, files: string[]) => void): void;
     export function readdirSync(path: string): string[];
     export function close(fd: string, callback?: Function): void;
     export function closeSync(fd: string): void;
-    export function open(path: string, flags: string, mode?: string, callback?: (err: Error, fd: string) =>any): void;
+    export function open(path: string, flags: string, mode?: string, callback?: (err: ErrnoException, fd: string) =>any): void;
     export function openSync(path: string, flags: string, mode?: string): void;
     export function utimes(path: string, atime: number, mtime: number, callback?: Function): void;
     export function utimesSync(path: string, atime: number, mtime: number): void;
@@ -765,9 +817,9 @@ declare module "fs" {
     export function write(fd: string, buffer: Buffer, offset: number, length: number, position: number, callback?: (err: Error, written: number, buffer: Buffer) =>any): void;
     export function writeSync(fd: string, buffer: Buffer, offset: number, length: number, position: number): void;
     export function read(fd: string, buffer: Buffer, offset: number, length: number, position: number, callback?: (err: Error, bytesRead: number, buffer: Buffer) => void): void;
-    export function readSync(fd: string, buffer: Buffer, offset: number, length: number, position: number): any[];
-    export function readFile(filename: string, encoding: string, callback: (err: Error, data: string) => void ): void;
-    export function readFile(filename: string, callback: (err: Error, data: Buffer) => void ): void;
+    export function readSync(fd: string, buffer: Buffer, offset: number, length: number, position?: number): any[];
+    export function readFile(filename: string, encoding: string, callback: (err: ErrnoException, data: string) => void ): void;
+    export function readFile(filename: string, callback: (err: ErrnoException, data: Buffer) => void ): void;
     export function readFileSync(filename: string): Buffer;
     export function readFileSync(filename: string, encoding: string): string;
     export function writeFile(filename: string, data: any, callback?: (err) => void): void;
@@ -963,7 +1015,7 @@ declare module "crypto" {
         setPrivateKey(public_key: string, encoding?: string): void;
     }
     export function getDiffieHellman(group_name: string): DiffieHellman;
-    export function pbkdf2(password: string, salt: string, iterations: number, keylen: number, callback: (err: Error, derivedKey: string) => any): void;
+    export function pbkdf2(password: string|Buffer, salt: string|Buffer, iterations: number, keylen: number, callback: (err: Error, derivedKey: string) => any): void;
     export function randomBytes(size: number, callback?: (err: Error, buf: Buffer) =>void );
 }
 

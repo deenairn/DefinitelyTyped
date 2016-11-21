@@ -1,4 +1,4 @@
-/// <reference path="needle.d.ts" />
+
 
 import needle = require("needle");
 
@@ -22,7 +22,7 @@ function ResponsePipeline() {
 
     var options = {
         compressed: true,
-        follow: true,
+        follow: 5,
         rejectUnauthorized: true
     };
 

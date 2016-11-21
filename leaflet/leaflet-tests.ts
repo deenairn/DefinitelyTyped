@@ -1,301 +1,328 @@
-/// <reference path="leaflet.d.ts" />
 
-// initialize the map on the "map" div with a given center and zoom
 
-var div = document.getElementById('map');
+import L = require('leaflet');
 
-var map : L.Map = L.map(div, {
-    center: L.latLng([51.505, -0.09]),
-	zoom: 13,
-	minZoom: 3,
-	maxZoom: 8,
-	maxBounds: L.latLngBounds([L.latLng(-60, -60), L.latLng(60, 60)]),
-	dragging: true,
-	touchZoom: true,
-	scrollWheelZoom: true,
+const latLngLiteral: L.LatLngLiteral = {lat: 12, lng: 13};
+const latLngTuple: L.LatLngTuple = [12, 13];
+
+let latLng: L.LatLng;
+latLng = L.latLng(12, 13);
+latLng = L.latLng(12, 13, 0);
+latLng = L.latLng(latLngLiteral);
+latLng = L.latLng({lat: 12, lng: 13, alt: 0});
+latLng = L.latLng(latLngTuple);
+latLng = L.latLng([12, 13, 0]);
+
+const latLngBoundsLiteral: L.LatLngBoundsLiteral = [[12, 13], latLngTuple];
+
+let latLngBounds: L.LatLngBounds;
+latLngBounds = L.latLngBounds(latLng, latLng);
+latLngBounds = L.latLngBounds(latLngLiteral, latLngLiteral);
+latLngBounds = L.latLngBounds(latLngTuple, latLngTuple);
+
+const pointTuple: L.PointTuple = [0, 0];
+
+let point: L.Point;
+point = L.point(12, 13);
+point = L.point(12, 13, true);
+point = L.point(pointTuple);
+point = L.point({x: 12, y: 13});
+
+const boundsLiteral: L.BoundsLiteral = [[1, 1], pointTuple];
+
+let bounds: L.Bounds;
+bounds = L.bounds(point, point);
+bounds = L.bounds(pointTuple, pointTuple);
+bounds = L.bounds([point, point]);
+bounds = L.bounds(boundsLiteral);
+
+let mapOptions: L.MapOptions = {};
+mapOptions = {
+	preferCanvas: true,
+	attributionControl: false,
+    zoomControl: true,
+	closePopupOnClick: false,
+	zoomSnap: 1,
+	zoomDelta: 1,
+	trackResize: false,
 	boxZoom: true,
-	tap: true,
+	dragging: true,
+	// CRS
+	zoom: 12,
+	minZoom: 10,
+	maxZoom: 14,
+    fadeAnimation: true,
+	markerZoomAnimation: false,
+	transform3DLimit: 123,
+	zoomAnimation: false,
+    zoomAnimationThreshold: 4,
+	inertia: false,
+	inertiaDeceleration: 2000,
+	inertiaMaxSpeed: 1000,
+	easeLinearity: 0.5,
+	worldCopyJump: true,
+	maxBoundsViscosity: 1.0,
+	keyboard: false,
+	keyboardPanDelta: 100,
+	wheelDebounceTime: 30,
+	wheelPxPerZoomLevel: 25,
+	tap: false,
+	tapTolerance: 10,
+	bounceAtZoomLimits: false
+};
 
-	tapTolerance: 30,
-	trackResize: true,
-	worldCopyJump: false,
-	closePopupOnClick: true,
-	bounceAtZoomLimits: true,
+mapOptions.doubleClickZoom = true;
+mapOptions.doubleClickZoom = 'center';
 
-	keyboard: true,
-	keyboardPanOffset: 80,
-	keyboardZoomOffset: 1,
+mapOptions.center = latLng;
+mapOptions.center = latLngLiteral;
+mapOptions.center = latLngTuple;
 
-	inertia: true,
-	inertiaDeceleration: 3000,
-	inertiaMaxSpeed: 1500,
-	inertiaThreshold: 32,
+mapOptions.layers = [];
+mapOptions.layers = [L.tileLayer('')]; // add layers of other types
 
-	zoomControl: true,
-	attributionControl: true,
+mapOptions.maxBounds = latLngBounds;
+mapOptions.maxBounds = [];
+mapOptions.maxBounds = latLngBoundsLiteral;
 
-	fadeAnimation: true,
-	zoomAnimation: true,
-	zoomAnimationThreshold: 4,
-	markerZoomAnimation: true
+// mapOptions.renderer = ?
 
-});
+mapOptions.scrollWheelZoom = true;
+mapOptions.scrollWheelZoom = 'center';
 
-map.dragging.enable();
-map.touchZoom.enable();
-map.scrollWheelZoom.enable();
-map.doubleClickZoom.enable();
-map.boxZoom.enable();
-map.tap.enable();
+mapOptions.touchZoom = false;
+mapOptions.touchZoom = 'center';
 
-map.setView(new L.LatLng(42, 51));
-map.setView(L.latLng(42, 51));
+let layer: L.Layer;
 
-map.setView(L.latLng(42, 51), 12);
-map.setView(L.latLng(42, 51), 12, {
-	reset: true,
-	pan: {
-		animate: true,
-		duration: 0.25,
-		easeLinearity: 0.25,
-		noMoveStart: false
-	},
-	zoom: {
-		animate: true
-	}
-});
+const htmlElement = document.getElementById('foo');
 
-map.setZoom(50);
-map.setZoom(50, {});
+let popupOptions: L.PopupOptions = {};
 
-map.zoomIn();
-map.zoomOut();
+let tooltipOptions: L.TooltipOptions = {};
 
-map.zoomIn(2);
-map.zoomOut(2);
+let zoomPanOptions: L.ZoomPanOptions = {};
+zoomPanOptions = {
+	animate: false,
+	duration: 0.5,
+	easeLinearity: 0.6,
+	noMoveStart: true
+};
 
-map.zoomIn(2, { animate: true });
-map.zoomOut(2, { animate: true });
+let zoomOptions: L.ZoomOptions = {};
 
-map.setZoomAround(L.latLng(42, 51), 8, { animate: false });
+let panOptions: L.PanOptions = {};
 
-map.fitBounds(L.latLngBounds(L.latLng(10, 10), L.latLng(20, 20)));
-map.fitBounds(L.latLngBounds(L.latLng(10, 10), L.latLng(20, 20)), {
-	paddingTopLeft: L.point(20, 20),
-	paddingBottomRight: L.point(20, 20),
-	padding: L.point(0, 0),
-	maxZoom: null
-});
+let fitBoundsOptions: L.FitBoundsOptions = {};
 
-map.fitWorld();
+let map = L.map('foo');
+map = L.map('foo', mapOptions);
+map = L.map(htmlElement);
+map = L.map(htmlElement, mapOptions);
 
-map.fitWorld({
-	animate: false
-});
+let doesItHaveLayer: boolean;
+doesItHaveLayer = map.hasLayer(L.tileLayer(''));
 
-map.panTo(L.latLng(42, 42));
-map.panTo(L.latLng(42, 42), {
-	animate: true
-});
+// map.getRenderer
 
-map.invalidateSize(true);
-map.invalidateSize({ reset: true });
+let html: HTMLElement;
+html = map.createPane('foo');
+html = map.createPane('foo', htmlElement)
+html = map.getPane('foo');
+html = map.getPane(htmlElement);
+html = map.getContainer();
 
-map.setMaxBounds(L.latLngBounds(L.latLng(10, 10), L.latLng(20, 20)));
+const panes = map.getPanes();
+html = panes.mapPane;
+html = panes.tilePane;
+html = panes.overlayPane;
+html = panes.shadowPane;
+html = panes.markerPane;
+html = panes.tooltipPane;
+html = panes.popupPane;
+html = panes['foo'];
 
-map.locate();
-map.locate({
-	watch: false,
-	setView: false,
-	maxZoom: 18,
-	timeout: 10000,
-	maximumAge: 0,
-	enableHighAccuracy: false
-});
+let coordinates: L.LatLng;
+coordinates = map.getCenter();
 
-map.stopLocate();
+let zoom: number;
+zoom = map.getZoom();
+zoom = map.getMinZoom();
+zoom = map.getMaxZoom();
+zoom = map.getBoundsZoom(latLngBounds);
+zoom = map.getBoundsZoom(latLngBounds, true);
+zoom = map.getBoundsZoom(latLngBoundsLiteral);
+zoom = map.getBoundsZoom(latLngBoundsLiteral, true);
 
-map.remove();
+let mapLatLngBounds: L.LatLngBounds;
+mapLatLngBounds = map.getBounds();
 
-var center : L.LatLng = map.getCenter();
-var zoom : number = map.getZoom();
-var minZoom: number = map.getMinZoom();
-var maxZoom: number = map.getMaxZoom();
-var bounds: L.LatLngBounds = map.getBounds();
-var boundsZoom: number = map.getBoundsZoom(bounds, true);
-var size: L.Point = map.getSize();
-var pixelBounds: L.Bounds = map.getPixelBounds();
-var pixelOrigin: L.Point = map.getPixelOrigin();
+let mapPoint: L.Point;
+mapPoint = map.getSize();
+mapPoint = map.getPixelOrigin();
 
-var layer = L.tileLayer("http://{s}.example.net/{x}/{y}/{z}.png");
+let mapPixelBounds: L.Bounds;
+mapPixelBounds = map.getPixelBounds();
+mapPixelBounds = map.getPixelWorldBounds();
+mapPixelBounds = map.getPixelWorldBounds(12);
 
-map.addLayer(layer);
-map.addLayer(layer, false);
+let tileLayerOptions: L.TileLayerOptions = {};
+tileLayerOptions = {
+    minZoom: 0,
+    maxZoom: 18,
+    maxNativeZoom: 2,
+    errorTileUrl: '',
+    zoomOffset: 0,
+    tms: true,
+    zoomReverse: true,
+    detectRetina: true,
+    crossOrigin: false,
+    opacity: 1,
+    updateWhenIdle: true,
+    updateWhenZooming: true,
+    updateInterval: 500,
+    attribution: '',
+    zIndex: 1,
+    noWrap: true,
+    pane: '',
+    className: '',
+    keepBuffer: 1,
+    foo: 'bar',
+    bar: () => 'foo',
+    abc: (data: any) => 'foobar'
+};
 
-map.removeLayer(layer);
-map.hasLayer(layer);
+tileLayerOptions.subdomains = 'a';
+tileLayerOptions.subdomains = ['a', 'b'];
 
-map.openPopup("canard", L.latLng(42, 51));
+tileLayerOptions.tileSize = 256;
+tileLayerOptions.tileSize = point;
+//tileLayerOptions.tileSize = pointTuple; investigate if this is valid
 
-var popup = L.popup({
-	autoPan: true
-});
+tileLayerOptions.bounds = latLngBounds;
+tileLayerOptions.bounds = latLngBoundsLiteral;
 
-map.openPopup(popup);
-map.closePopup(popup);
-map.closePopup();
+let tileLayer: L.TileLayer;
+tileLayer = L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png');
+tileLayer = L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png', tileLayerOptions);
+tileLayer = L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png?{foo}&{bar}&{abc}', {foo: 'bar', bar: (data: any) => 'foo', abc: () => ''});
 
-map.addControl(L.control.attribution({position: 'bottomright'}));
-map.removeControl(L.control.attribution({ position: 'bottomright' }));
+let eventHandler = () => {};
+let domEvent: Event = {} as Event;
+L.DomEvent
+	.on(htmlElement, 'click', eventHandler)
+	.addListener(htmlElement, 'click', eventHandler)
+	.off(htmlElement, 'click', eventHandler)
+	.removeListener(htmlElement, 'click', eventHandler)
+	.on(htmlElement, {'click': eventHandler})
+	.addListener(htmlElement, {'click': eventHandler})
+	.off(htmlElement, {'click': eventHandler}, eventHandler)
+	.removeListener(htmlElement, {'click': eventHandler}, eventHandler)
+	.stopPropagation(domEvent)
+	.disableScrollPropagation(htmlElement)
+	.disableClickPropagation(htmlElement)
+	.preventDefault(domEvent)
+	.stop(domEvent);
+point = L.DomEvent.getMousePosition(domEvent);
+point = L.DomEvent.getMousePosition(domEvent, htmlElement);
+const wheelDelta: number = L.DomEvent.getWheelDelta(domEvent);
 
-map.latLngToLayerPoint(map.layerPointToLatLng(L.point(0, 0)));
-map.latLngToContainerPoint(map.containerPointToLatLng(L.point(0, 0)));
-map.containerPointToLayerPoint(L.point(0, 0));
-map.layerPointToContainerPoint(L.point(0, 0));
-
-map.project(map.unproject(L.point(10, 20)));
-map.project(map.unproject(L.point(10, 20), 12), 12);
-
-var mouseEvent: L.LeafletMouseEvent;
-map.mouseEventToContainerPoint(mouseEvent);
-map.mouseEventToLayerPoint(mouseEvent);
-map.mouseEventToLatLng(mouseEvent);
-
-map.getContainer().classList.add('roger');
-map.getPanes().mapPane.classList.add('roger');
-map.getPanes().markerPane.classList.add('roger');
-map.getPanes().objectsPane.classList.add('roger');
-map.getPanes().overlayPane.classList.add('roger');
-map.getPanes().popupPane.classList.add('roger');
-map.getPanes().shadowPane.classList.add('roger');
-map.getPanes().tilePane.classList.add('roger');
-
-map.whenReady((m: L.Map) => {
-	m.zoomOut();
-});
-
-map.on('click', () => {
-	map.zoomOut();
-});
-
-map.off('dblclick', L.Util.falseFn);
-
-map.once('contextmenu', (e: L.LeafletMouseEvent) => {
-	map.openPopup('contextmenu', e.latlng);
-});
-
-var marker = L.marker(L.latLng(42, 51), {
-	icon: L.icon({
-		iconURl: 'roger.png',
-		iconRetinaUrl: 'roger-retina.png',
-		iconSize: L.point(40, 40),
-		iconAnchor: L.point(20, 0),
-		shadowUrl: 'roger-shadow.png',
-		shadowRetinaUrl: 'roger-shadow-retina.png',
-		shadowSize: L.point(44, 44),
-		shadowAnchor: L.point(22, 0),
-		popupAnchor: L.point(0, 0),
-		className: 'roger-icon'
-	}),
-	clickable: true,
-	draggable: false,
-	keyboard: true,
-	title: 'this is an icon',
-	alt: '',
-	zIndexOffset: 0,
-	opacity: 1.0,
-	riseOnHover: false,
-	riseOffset: 250
-});
-
-marker.addTo(map);
-
-marker.on('click', (e: L.LeafletMouseEvent) => {
-	map.setView(e.latlng);
-});
-
-marker.once('mouseover', () => {
-	marker.openPopup();
-})
-
-marker.setLatLng(marker.getLatLng());
-
-marker.setIcon(L.icon({}));
-
-marker.setZIndexOffset(30);
-marker.setOpacity(0.8);
-
-marker.bindPopup(popup);
-marker.unbindPopup();
-marker.bindPopup('hello', {
-	closeOnClick: true
-});
-
-marker.openPopup();
-marker.closePopup();
-marker.togglePopup();
-marker.togglePopup();
-marker.setPopupContent('hello 3')
-marker.getPopup().setContent('hello 2');
-marker.update();
-
-marker.toGeoJSON();
-
-marker.dragging.enable();
-
-popup = L.popup({
-	maxWidth: 300,
-	minWidth: 50,
-	maxHeight: null,
-	autoPan: true,
-	keepInView: false,
-	closeButton: true,
-	offset: L.point(0, 6),
-	autoPanPaddingTopLeft: null,
-	autoPanPaddingBottomRight: L.point(20, 20),
-	autoPanPadding: L.point(5, 5),
-	zoomAnimation: true,
-	closeOnClick: null,
-	className: 'roger'
-});
-
-popup.setLatLng(L.latLng(12, 54)).setContent('this is nice popup').openOn(map);
-
-popup.update();
-
-var tileLayer = L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png?{foo}', {
-	foo: 'bar',
-	minZoom: 0,
-	maxZoom: 18,
-	maxNativeZoom: 17,
-	tileSize: 256,
-	subdomains: ['a','b','c'],
-	errorTileUrl: '',
-	attribution: '',
-	tms: false,
-	continuousWorld: false,
-	noWrap: false,
-	zoomOffset: 0,
-	zoomReverse: false,
-	opacity: 1.0,
-	zIndex: null,
-	unloadInvisibleTiles: false,
-	updateWhenIdle: false,
-	detectRetina: true,
-	reuseTiles: true,
-	bounds: null
-});
-
-tileLayer.on('loading', L.Util.falseFn)
-	.off('loading', L.Util.falseFn)
-	.once('tileload', L.Util.falseFn);
-
-tileLayer.addTo(map);
-
-tileLayer.bringToBack()
-	.bringToFront()
-	.setOpacity(0.7)
-	.setZIndex(9)
-	.redraw()
-	.setUrl('http://perdu.com')
-	.getContainer();
+map = map
+	// addControl
+	// removeControl
+	.addLayer(tileLayer)
+	.removeLayer(tileLayer) // use a different type of layer
+	.eachLayer((currentLayer) => {
+		layer = currentLayer;
+	})
+	.eachLayer((currentLayer) => {
+		layer = currentLayer;
+	}, {})
+	.openPopup(L.popup())
+	.openPopup('Hello World', latLng)
+	.openPopup('Hello World', latLng, popupOptions)
+	.openPopup('Hello World', latLngLiteral)
+	.openPopup('Hello World', latLngLiteral, popupOptions)
+	.openPopup('Hello World', latLngTuple)
+	.openPopup('Hello World', latLngTuple, popupOptions)
+	.openPopup(htmlElement, latLng)
+	.openPopup(htmlElement, latLng, popupOptions)
+	.openPopup(htmlElement, latLngLiteral)
+	.openPopup(htmlElement, latLngLiteral, popupOptions)
+	.openPopup(htmlElement, latLngTuple)
+	.openPopup(htmlElement, latLngTuple, popupOptions)
+	.closePopup()
+	.closePopup(L.popup())
+	.openTooltip(L.tooltip())
+	.openTooltip('Hello Word', latLng)
+	.openTooltip('Hello World', latLng, tooltipOptions)
+	.openTooltip('Hello World', latLngLiteral)
+	.openTooltip('Hello World', latLngLiteral, tooltipOptions)
+	.openTooltip('Hello World', latLngTuple)
+	.openTooltip('Hello World', latLngTuple, tooltipOptions)
+	.openTooltip(htmlElement, latLng)
+	.openTooltip(htmlElement, latLng, tooltipOptions)
+	.openTooltip(htmlElement, latLngLiteral)
+	.openTooltip(htmlElement, latLngLiteral, tooltipOptions)
+	.openTooltip(htmlElement, latLngTuple)
+	.openTooltip(htmlElement, latLngTuple, tooltipOptions)
+	.closeTooltip()
+	.closeTooltip(L.tooltip())
+	.setView(latLng, 12)
+	.setView(latLng, 12, zoomPanOptions)
+	.setView(latLngLiteral, 12)
+	.setView(latLngLiteral, 12, zoomPanOptions)
+	.setView(latLngTuple, 12)
+	.setView(latLngTuple, 12, zoomPanOptions)
+	.setZoom(12, zoomPanOptions) // investigate if zoomPanOptions are really required
+	.zoomIn()
+	.zoomIn(1)
+	.zoomIn(1, zoomOptions)
+	.zoomOut()
+	.zoomOut(1)
+	.zoomOut(1, zoomOptions)
+	.setZoomAround(latLng, 12, zoomOptions) // investigate if zoom options are really required
+	.setZoomAround(latLngLiteral, 12, zoomOptions)
+	.setZoomAround(latLngTuple, 12, zoomOptions)
+	.setZoomAround(point, 12, zoomOptions)
+	.setZoomAround(pointTuple, 11, zoomOptions)
+	.fitBounds(latLngBounds, fitBoundsOptions) // investigate if fit bounds options are really required
+	.fitBounds(latLngBoundsLiteral, fitBoundsOptions)
+	.fitWorld()
+	.fitWorld(fitBoundsOptions)
+	.panTo(latLng)
+	.panTo(latLng, panOptions)
+	.panTo(latLngLiteral)
+	.panTo(latLngLiteral, panOptions)
+	.panTo(latLngTuple)
+	.panTo(latLngTuple, panOptions)
+	.panBy(point)
+	.panBy(pointTuple)
+	.setMaxBounds(latLngBounds)
+	.setMaxBounds(latLngBoundsLiteral)
+	.setMinZoom(5)
+	.setMaxZoom(10)
+	.panInsideBounds(latLngBounds)
+	.panInsideBounds(latLngBounds, panOptions)
+	.panInsideBounds(latLngBoundsLiteral)
+	.panInsideBounds(latLngBoundsLiteral, panOptions)
+	.invalidateSize(zoomPanOptions)
+	.invalidateSize(false)
+	.stop()
+	.flyTo(latLng)
+	.flyTo(latLng, 12)
+	.flyTo(latLng, 12, zoomOptions)
+	.flyTo(latLngLiteral)
+	.flyTo(latLngLiteral, 12)
+	.flyTo(latLngLiteral, 12, zoomPanOptions)
+	.flyTo(latLngTuple)
+	.flyTo(latLngTuple, 12)
+	.flyTo(latLngTuple, 12, zoomPanOptions)
+	.flyToBounds(latLngBounds)
+	.flyToBounds(latLngBounds, fitBoundsOptions)
+	.flyToBounds(latLngBoundsLiteral)
+	.flyToBounds(latLngBoundsLiteral, fitBoundsOptions)
+	// addHandler
+	.remove()
+	.whenReady(() => {})
+	.whenReady(() => {}, {});
